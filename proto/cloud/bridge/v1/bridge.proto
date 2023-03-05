@@ -1,0 +1,34 @@
+syntax="proto3";
+
+package dk.nohns.cloud.bridge;
+
+option go_package = "github.com/nohns/semesterprojekt2/proto/gen/go/cloud/bridge/v1;bridge";
+
+service BridgeService {
+    // Register the bridge with the cloud
+    rpc Register(RegisterRequest) returns (RegisterResponse) {}
+
+    // Streams actions from the cloud (server) to the bridge (client) and the bridge can send 
+    // answers back if it needs to. Therefore the opposite naming
+    rpc StreamActions(stream StreamAnswer) returns (stream StreamAction) {}
+}
+
+message RegisterRequest {}
+
+message RegisterResponse {
+    string bridgeId = 1;
+}
+
+message StreamAnswer {
+    message DoorState {
+        bool open = 1;
+    }
+}
+
+message StreamAction {
+    string type = 1;
+
+    message OpenDoor {}
+    message CloseDoor {}
+}
+

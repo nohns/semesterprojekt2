@@ -1,0 +1,21 @@
+syntax="proto3";
+
+package dk.nohns.pi.events;
+
+option go_package = "github.com/nohns/semesterprojekt2/proto/gen/go/pi/events/v1;events";
+
+// PiAuthorized is sent when the pi has been commissioned to the cloud
+message PiCommissioned {
+    string piId = 1;
+}
+
+// PhoneAuthorized is sent when a phone is authorized to talk to the pi via the cloud
+message PhoneAuthorized {
+    string userId = 1;
+}
+
+// DoorLocked is sent when the door has been locked
+message DoorLocked {}
+
+// DoorUnlocked is sent when the door has been unlocked
+message DoorUnlocked {}

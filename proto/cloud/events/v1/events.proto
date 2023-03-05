@@ -1,0 +1,5 @@
+syntax="proto3";
+
+package dk.nohns.cloud.events;
+
+option go_package = "github.com/nohns/semesterprojekt2/proto/gen/go/cloud/events/v1;events";
