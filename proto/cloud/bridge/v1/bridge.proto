@@ -20,6 +20,8 @@ message RegisterResponse {
 }
 
 message StreamAnswer {
+    string type = 1;
+
     message DoorState {
         bool open = 1;
     }
