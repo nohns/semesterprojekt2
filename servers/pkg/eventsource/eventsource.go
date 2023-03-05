@@ -2,8 +2,13 @@ package eventsource
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/nohns/semesterprojekt2/pkg/event"
+)
+
+var (
+	ErrCommandNotHandled = fmt.Errorf("command not handled")
 )
 
 type EventStore interface {
@@ -26,4 +31,24 @@ type Cursor interface {
 	Event() (*event.Event, error)
 	// Closes the cursor. Must be called when done reading events.
 	Close() error
+}
+
+type AggregateRoot interface {
+	Apply(evts ...*event.Event) error
+	Process(cmd any) ([]*event.Event, error)
+}
+
+func Apply(cursor Cursor, ar AggregateRoot) error {
+	for cursor.Next() {
+		evt, err := cursor.Event()
+		if err != nil {
+			return err
+		}
+
+		if err := ar.Apply(evt); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
