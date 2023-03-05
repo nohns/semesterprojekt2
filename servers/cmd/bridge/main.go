@@ -8,6 +8,7 @@ import (
 
 	"github.com/nohns/semesterprojekt2/bridge"
 	"github.com/nohns/semesterprojekt2/bridge/cmdstream"
+	"github.com/nohns/semesterprojekt2/pkg/eventbus"
 	"github.com/nohns/semesterprojekt2/pkg/eventsource"
 	"github.com/nohns/semesterprojekt2/pkg/sqlite"
 	bridgepb "github.com/nohns/semesterprojekt2/proto/gen/go/cloud/bridge/v1"
@@ -41,8 +42,11 @@ func main() {
 	// Create event store
 	var store eventsource.EventStore = sqlite.NewEventSource(db)
 
+	// Create event bus
+	evtbus := eventbus.New()
+
 	// Create lock service
-	lockService := bridge.NewLockService(store, nil)
+	lockService := bridge.NewLockService(store, evtbus)
 
 	conn, err := grpc.Dial(conf.CloudGRPCURI, grpc.WithInsecure())
 	if err != nil {

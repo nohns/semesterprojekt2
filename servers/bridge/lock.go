@@ -129,7 +129,7 @@ func (s *LockService) processCmdForLock(ctx context.Context, lockId string, cmd 
 	}
 
 	// Dispatch events
-	if err := s.d.Dispatch(ctx, newEvts...); err != nil {
+	if err := s.d.Dispatch(newEvts...); err != nil {
 		return fmt.Errorf("error dispatching events: %v", err)
 	}
 
