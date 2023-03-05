@@ -22,7 +22,7 @@ message RegisterResponse {
 message StreamAnswer {
     string type = 1;
 
-    message DoorState {
+    message LockState {
         bool open = 1;
     }
 }
@@ -30,8 +30,14 @@ message StreamAnswer {
 message StreamAction {
     string type = 1;
 
-    message OpenDoor {}
-    message CloseDoor {}
-    message ReadDoorState {}
+    message OpenLock {
+        string lockId = 1;
+    }
+    message CloseLock {
+        string lockId = 1;
+    }
+    message ReadLockState {
+        string lockId = 1;
+    }
 }
 

@@ -16,7 +16,7 @@ import (
 func main() {
 
 	// Open database
-	db, err := sql.Open("sqlite3", "file:pi.db")
+	db, err := sql.Open("sqlite3", "file:bridge.db")
 	if err != nil {
 		log.Printf("error opening database: %v", err)
 		return

@@ -1,0 +1,21 @@
+syntax="proto3";
+
+package dk.nohns.bridge.events;
+
+option go_package = "github.com/nohns/semesterprojekt2/proto/gen/go/bridge/events/v1;events";
+
+// PiAuthorized is sent when the bridge has been commissioned to the cloud
+message BridgeCommissioned {
+    string piId = 1;
+}
+
+// PhoneAuthorized is sent when a phone is authorized to talk to the bridge via the cloud
+message PhoneAuthorized {
+    string userId = 1;
+}
+
+// DoorLocked is sent when the door has been locked
+message DoorLocked {}
+
+// DoorUnlocked is sent when the door has been unlocked
+message DoorUnlocked {}
