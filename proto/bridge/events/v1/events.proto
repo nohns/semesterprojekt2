@@ -14,8 +14,16 @@ message PhoneAuthorized {
     string userId = 1;
 }
 
+message LockCreated {
+    string lockId = 1;
+}
+
 // DoorLocked is sent when the door has been locked
-message DoorLocked {}
+message LockEngaged {
+    string lockId = 1;
+}
 
 // DoorUnlocked is sent when the door has been unlocked
-message DoorUnlocked {}
+message LockDisengaged {
+    string lockId = 1;
+}
