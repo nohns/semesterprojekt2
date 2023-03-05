@@ -12,7 +12,7 @@ func Migrate(db *sql.DB) error {
 			at DATETIME DEFAULT CURRENT_TIMESTAMP,
 			data BLOB NOT NULL
 		);
-		CREATE INDEX IF NOT EXISTS events_aggregate_id_version ON events (aggregate_id, version);
+		CREATE INDEX IF NOT EXISTS events_version ON events (version);
 	`)
 	if err != nil {
 		return err
