@@ -10,6 +10,7 @@ import (
 	"github.com/nohns/semesterprojekt2/pkg/sqlite"
 	"github.com/nohns/semesterprojekt2/proto/gen/go/pi/events/v1"
 
+	_ "github.com/joho/godotenv/autoload"
 	_ "github.com/mattn/go-sqlite3"
 )
 

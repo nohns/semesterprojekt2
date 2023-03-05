@@ -1,2 +1,4 @@
-bridge.db
-cloud.db
+/bridge.db
+/cloud.db
+
+/.env
