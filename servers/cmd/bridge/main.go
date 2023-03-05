@@ -61,7 +61,7 @@ func main() {
 
 	// Start listening for commands
 	if err := cs.Listen(context.TODO()); err != nil {
-		log.Printf("command stream closed")
+		log.Printf("error streaming commands: %v", err)
 		return
 	}
 }
