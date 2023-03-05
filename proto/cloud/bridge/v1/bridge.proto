@@ -32,5 +32,6 @@ message StreamAction {
 
     message OpenDoor {}
     message CloseDoor {}
+    message ReadDoorState {}
 }
 
