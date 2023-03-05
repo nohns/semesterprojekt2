@@ -45,7 +45,7 @@ func main() {
 	// Create event bus
 	evtbus := eventbus.New()
 
-	// Create lock service
+	// Create lock domain service
 	lockService := bridge.NewLockService(store, evtbus)
 
 	conn, err := grpc.Dial(conf.CloudGRPCURI, grpc.WithInsecure())
