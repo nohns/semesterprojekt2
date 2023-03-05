@@ -8,13 +8,13 @@ import (
 
 type EventStore interface {
 	// Puts an event into the event store
-	Put(ctx context.Context, event *event.Event) error
+	Put(ctx context.Context, event ...*event.Event) error
 	// Gets all events from a specific aggregate
-	Get(ctx context.Context, aggregateId string) (Cursor, error)
+	Get(ctx context.Context, aggregateId event.CompositeID) (Cursor, error)
 	// Gets a range of events from a specific aggregate. The range is inclusive.
 	// If fromVersion is 0, range starts at the first event.
 	// If toVersion is 0, range ends at the last event.
-	Range(ctx context.Context, aggregateId string, fromVersion, toVersion int) (Cursor, error)
+	Range(ctx context.Context, aggregateId event.CompositeID, fromVersion, toVersion int) (Cursor, error)
 	// Plays all events regardsless of aggregate
 	Play(ctx context.Context) (Cursor, error)
 }
