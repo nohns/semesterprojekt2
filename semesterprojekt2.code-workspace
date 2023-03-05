@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "./servers",
+			"name": "Server"
+		},
+		{
+			"path": "proto",
+			"name": "Protobufs"
+		},
+		{
+			"path": ".",
+			"name": "Root"
+		}
+	],
+	"settings": {}
+}
