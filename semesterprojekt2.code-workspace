@@ -9,9 +9,13 @@
 			"name": "Protobufs"
 		},
 		{
+			"path": "app",
+			"name": "Native app"
+		},
+		{
 			"path": ".",
 			"name": "Root"
-		}
+		},
 	],
 	"settings": {}
 }
