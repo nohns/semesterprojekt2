@@ -3,12 +3,15 @@ package main
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"log"
 
-	"github.com/nohns/semesterprojekt2/pkg/event"
+	"github.com/nohns/semesterprojekt2/bridge"
+	"github.com/nohns/semesterprojekt2/bridge/cmdstream"
 	"github.com/nohns/semesterprojekt2/pkg/eventsource"
 	"github.com/nohns/semesterprojekt2/pkg/sqlite"
-	"github.com/nohns/semesterprojekt2/proto/gen/go/pi/events/v1"
+	bridgepb "github.com/nohns/semesterprojekt2/proto/gen/go/cloud/bridge/v1"
+	"google.golang.org/grpc"
 
 	_ "github.com/joho/godotenv/autoload"
 	_ "github.com/mattn/go-sqlite3"
@@ -16,8 +19,15 @@ import (
 
 func main() {
 
+	// Read config
+	conf, err := loadConfFromEnv()
+	if err != nil {
+		log.Printf("error loading config: %v", err)
+		return
+	}
+
 	// Open database
-	db, err := sql.Open("sqlite3", "file:bridge.db")
+	db, err := sql.Open("sqlite3", fmt.Sprintf("file:%s", conf.DBPath))
 	if err != nil {
 		log.Printf("error opening database: %v", err)
 		return
@@ -31,45 +41,23 @@ func main() {
 	// Create event store
 	var store eventsource.EventStore = sqlite.NewEventSource(db)
 
-	// Try store random DoorUnlocked event
-	evt, err := event.FromMessage("door2", &events.PhoneAuthorized{
-		UserId: "martin",
-	})
+	// Create lock service
+	lockService := bridge.NewLockService(store, nil)
+
+	conn, err := grpc.Dial(conf.CloudGRPCURI, grpc.WithInsecure())
 	if err != nil {
-		log.Printf("error creating event: %v", err)
+		log.Printf("error dialing cloud grpc: %v", err)
 		return
 	}
-	if err := store.Put(context.Background(), evt); err != nil {
-		log.Printf("error persisting event: %v", err)
+	defer conn.Close()
+
+	// Create command stream
+	distributor := cmdstream.NewDistributor(lockService)
+	cs := cmdstream.New(bridgepb.NewCmdServiceClient(conn), distributor)
+
+	// Start listening for commands
+	if err := cs.Listen(context.TODO()); err != nil {
+		log.Printf("command stream closed")
 		return
 	}
-	log.Printf("event persisted. Got version %d at %v", evt.Version, evt.At)
-
-	// Try to read all events
-	cursor, err := store.Play(context.Background())
-	if err != nil {
-		log.Printf("error reading events: %v", err)
-		return
-	}
-	defer cursor.Close()
-
-	for cursor.Next() {
-		evt, err := cursor.Event()
-		if err != nil {
-			log.Printf("error reading event: %v", err)
-			return
-		}
-		log.Printf("event: %v (id = %s), version: %d (aggr. ver = %d), at: %v", evt.Type, evt.AggregateId, evt.Version, evt.AggregateVersion, evt.At)
-
-		switch evt.Type {
-		case "PhoneAuthorized":
-			var msg events.PhoneAuthorized
-			if err := evt.Unmarshal(&msg); err != nil {
-				log.Printf("error unmarshaling event data: %v", err)
-				return
-			}
-			log.Printf(" -> for user: %s", msg.UserId)
-		}
-	}
-
 }
