@@ -21,7 +21,7 @@ func NewEventSource(db *sql.DB) *EventStore {
 	}
 }
 
-func (es *EventStore) Put(ctx context.Context, event *event.Event) error {
+func (es *EventStore) Put(ctx context.Context, evts ...*event.Event) error {
 	// Start DB transaction
 	tx, err := es.db.BeginTx(ctx, nil)
 	if err != nil {
@@ -29,6 +29,21 @@ func (es *EventStore) Put(ctx context.Context, event *event.Event) error {
 	}
 	defer tx.Rollback()
 
+	// Put events
+	for _, evt := range evts {
+		if err := es.putTx(tx, evt); err != nil {
+			return err
+		}
+	}
+
+	// Commit transaction
+	if err := tx.Commit(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (es *EventStore) putTx(tx *sql.Tx, event *event.Event) error {
 	params := []any{}
 	format := []any{}
 	if event.AggregateId != "" {
@@ -76,18 +91,14 @@ func (es *EventStore) Put(ctx context.Context, event *event.Event) error {
 		return err
 	}
 
-	// Commit transaction
-	if err := tx.Commit(); err != nil {
-		return err
-	}
 	return nil
 }
 
-func (es *EventStore) Get(ctx context.Context, aggregateId string) (eventsource.Cursor, error) {
+func (es *EventStore) Get(ctx context.Context, aggregateId event.CompositeID) (eventsource.Cursor, error) {
 	return es.Range(ctx, aggregateId, 0, 0)
 }
 
-func (es *EventStore) Range(ctx context.Context, aggregateId string, fromVersion, toVersion int) (eventsource.Cursor, error) {
+func (es *EventStore) Range(ctx context.Context, aggregateId event.CompositeID, fromVersion, toVersion int) (eventsource.Cursor, error) {
 	// Start DB transaction
 	tx, err := es.db.BeginTx(ctx, nil)
 	if err != nil {
@@ -177,7 +188,7 @@ func (esc *evtSrcCursor) Next() bool {
 }
 
 func (esc *evtSrcCursor) Event() (*event.Event, error) {
-	var aggregateId string
+	var aggregateId event.CompositeID
 	var version int
 	var aggregateVersion int
 	var eventType string
