@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import {ChevronLeftIcon} from 'react-native-heroicons/outline';
 import Lock from '../components/Lock';
+import {greet} from '../grpc/client';
 
 interface HomeProps {
   navigation: any;
@@ -19,6 +20,7 @@ function Home({navigation, style}: HomeProps) {
   const [locked, setLocked] = React.useState(true);
 
   const handleOnClick = () => {
+    greet();
     setLocked(!locked);
     console.log(locked);
   };
