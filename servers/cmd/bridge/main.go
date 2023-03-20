@@ -6,19 +6,21 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/nohns/semesterprojekt2/bridge"
-	"github.com/nohns/semesterprojekt2/bridge/cmdstream"
-	"github.com/nohns/semesterprojekt2/pkg/eventbus"
-	"github.com/nohns/semesterprojekt2/pkg/eventsource"
-	"github.com/nohns/semesterprojekt2/pkg/sqlite"
 	bridgepb "github.com/nohns/semesterprojekt2/proto/gen/go/cloud/bridge/v1"
+	"github.com/nohns/servers/bridge"
+	"github.com/nohns/servers/bridge/cmdstream"
+	"github.com/nohns/servers/pkg/eventbus"
+	"github.com/nohns/servers/pkg/eventsource"
+	"github.com/nohns/servers/pkg/sqlite"
 	"google.golang.org/grpc"
 
-	_ "github.com/joho/godotenv/autoload"
 	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
+
+	//no magic autoloading of .env file
+	readEnvfile()
 
 	// Read config
 	conf, err := loadConfFromEnv()

@@ -12,6 +12,17 @@ message GreetResponse {
   string greeting1 =2;
 }
 
+message GreetRequest1 {
+  string greeting = 1;
+  string greeting1 = 2;
+}
+
+message GreetResponse1 {
+  string greeting = 1;
+  string greeting1 =2;
+}
+
 service GreetService {
   rpc Greet(GreetRequest) returns (GreetResponse) {}
+  rpc Greet1(GreetRequest1) returns (GreetResponse1) {}
 }

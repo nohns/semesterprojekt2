@@ -2,12 +2,26 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"strings"
 
-	"github.com/nohns/semesterprojekt2/bridge"
+	"github.com/joho/godotenv"
+
+	"github.com/nohns/servers/bridge"
 )
+
+func readEnvfile() {
+	//Read the .env file
+	err := godotenv.Load("../../.env")
+	if err != nil {
+		log.Println("Loading .env file failed, using production environment")
+	}
+	if err == nil {
+		log.Println("Loaded .env file")
+	}
+}
 
 func loadConfFromEnv() (*bridge.Config, error) {
 

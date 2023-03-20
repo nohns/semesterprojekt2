@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package app.v1;
+
+option go_package = "github.com/nohns/proto/app/v1;appv1";
+
+service AppService {
+rpc GetLockState(GetLockStateRequest) returns (GetLockStateResponse) {}
+rpc SetLockState(SetLockStateRequest) returns (SetLockStateResponse) {}
+}
+
+message GetLockStateRequest {
+string id = 1;
+}
+
+message GetLockStateResponse {
+bool locked = 1;
+}
+
+message SetLockStateRequest {
+string id = 1;
+bool locked = 2;
+}
+
+message SetLockStateResponse {
+bool locked = 1;
+}
+

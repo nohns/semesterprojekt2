@@ -3,6 +3,13 @@ import {View, StyleSheet} from 'react-native';
 import {LockClosedIcon} from 'react-native-heroicons/outline';
 import {LockOpenIcon} from 'react-native-heroicons/outline/';
 
+import Animated, {
+  useAnimatedStyle,
+  withRepeat,
+  withSequence,
+  withTiming,
+} from 'react-native-reanimated';
+
 interface LockProps {
   locked: boolean;
 }
@@ -10,18 +17,26 @@ interface LockProps {
 function Lock({locked}: LockProps) {
   return (
     <View style={[styles.container]}>
-      <View style={[styles.lock]} />
-      <View style={locked ? [styles.backgroundRed] : [styles.backgroundGreen]}>
+      <View style={[styles.lock]}>
         <View
-          style={locked ? [styles.backgroundRed2] : [styles.backgroundGreen2]}
-        />
-        {locked ? (
-          <LockClosedIcon size={65} color={'white'} style={styles.lock} />
-        ) : (
-          <LockOpenIcon size={65} color={'white'} style={styles.lock} />
-        )}
+          style={locked ? [styles.backgroundRed] : [styles.backgroundGreen]}>
+          <View
+            style={
+              locked ? [styles.backgroundRed2] : [styles.backgroundGreen2]
+            }>
+            {locked ? (
+              <LockClosedIcon size={65} color={'white'} style={styles.lock} />
+            ) : (
+              <LockOpenIcon
+                size={65}
+                color={'white'}
+                opacity={'100'}
+                style={styles.lock}
+              />
+            )}
+          </View>
+        </View>
       </View>
-      <View />
     </View>
   );
 }

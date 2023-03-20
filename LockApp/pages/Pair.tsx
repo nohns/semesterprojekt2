@@ -6,13 +6,11 @@ interface PairProps {
   style?: StyleProp<ViewStyle>;
   navigation: any;
 }
-
+{
+  /* <Bluetooth /> */
+}
 function Pair({navigation, style}: PairProps) {
-  return (
-    <View style={[styles.container, style]}>
-      <Bluetooth />
-    </View>
-  );
+  return <View style={[styles.container, style]}></View>;
 }
 
 const styles = StyleSheet.create({

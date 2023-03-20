@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import {ChevronLeftIcon} from 'react-native-heroicons/outline';
 import Lock from '../components/Lock';
+import Locked from '../components/Locked';
 import {greet} from '../grpc/client';
 
 interface HomeProps {
@@ -26,8 +27,13 @@ function Home({navigation, style}: HomeProps) {
   };
 
   const handleNavigate = () => {
-    navigation.navigate('Pair');
+    navigation.navigate('Onboarding');
   };
+
+  /*   const SWITCH_TRACK_COLOR = {
+    false: '#767577',
+    true: '#81b0ff',
+  }; */
 
   return (
     <View style={[styles.container, style]}>
@@ -57,7 +63,8 @@ function Home({navigation, style}: HomeProps) {
           ) : (
             <Text style={styles.h2}> {'Tryk for at låse op'}</Text>
           )}
-          <Lock locked={locked} />
+          {/*  <Lock locked={locked} /> */}
+          <Locked locked={locked} />
         </View>
       </TouchableWithoutFeedback>
     </View>
@@ -124,6 +131,7 @@ const styles = StyleSheet.create({
   bigWrapper: {
     flexDirection: 'column',
     alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

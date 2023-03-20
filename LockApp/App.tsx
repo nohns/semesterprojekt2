@@ -5,7 +5,8 @@ import {NavigationContainer} from '@react-navigation/native';
 
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Home from './pages/Home';
-import Pair from './pages/Pair';
+//import Pair from './pages/Pair';
+import Onboarding from './pages/Onboarding';
 
 // Import polyfills if not running on web.  Attempting to import these in web mode will result in numerous errors
 // trying to access react-native APIs
@@ -30,8 +31,8 @@ function App() {
         screenOptions={{headerShown: false}}
         initialRouteName="Home">
         <Stack.Screen
-          name="Pair"
-          component={Pair}
+          name="Onboarding"
+          component={Onboarding}
           initialParams={{Stack, styles}}
         />
         <Stack.Screen

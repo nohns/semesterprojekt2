@@ -1,0 +1,10 @@
+# @format
+
+version: v1
+plugins:
+  - name: go
+    out: .
+    opt: paths=source_relative
+  - name: connect-go
+    out: .
+    opt: paths=source_relative

@@ -1,1 +1,8 @@
 .DS_STORE
+./proto/package-lock.json
+
+
+**/node_modules/**
+**package-lock.json
+**.env
+**./bridge.db

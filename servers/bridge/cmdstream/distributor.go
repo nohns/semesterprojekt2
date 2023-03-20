@@ -3,8 +3,8 @@ package cmdstream
 import (
 	"context"
 
-	"github.com/nohns/semesterprojekt2/bridge"
 	bridgepb "github.com/nohns/semesterprojekt2/proto/gen/go/cloud/bridge/v1"
+	"github.com/nohns/servers/bridge"
 )
 
 type distributor struct {

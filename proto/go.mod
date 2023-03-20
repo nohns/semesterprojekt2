@@ -1,6 +1,6 @@
-module github.com/nohns/semesterprojekt2/proto
+module github.com/nohns/proto
 
-go 1.19
+go 1.20
 
 require google.golang.org/protobuf v1.28.1
 
