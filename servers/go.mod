@@ -6,7 +6,7 @@ replace github.com/nohns/semesterprojekt2/proto => ../proto
 
 require (
 	github.com/mattn/go-sqlite3 v1.14.16
-	github.com/nohns/semesterprojekt2/proto v0.0.0-20230313230352-bf0827d85a8c
+	github.com/nohns/semesterprojekt2/proto v0.0.0-20210830150000-000000000000
 	google.golang.org/protobuf v1.30.0
 )
 
