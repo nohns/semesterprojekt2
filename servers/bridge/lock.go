@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/nohns/proto/gen/go/bridge/events/v1"
+	"github.com/nohns/proto/bridge/events/v1"
 	"github.com/nohns/servers/pkg/event"
 	"github.com/nohns/servers/pkg/eventsource"
 )

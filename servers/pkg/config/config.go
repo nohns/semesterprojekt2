@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"fmt"
@@ -12,16 +12,15 @@ import (
 	"github.com/nohns/servers/bridge"
 )
 
-func readEnvfile() {
+func ReadEnvfile() {
 	//Read the .env file
-	err := godotenv.Load("../../.env")
+	err := godotenv.Load("../.env")
 	if err != nil {
 		log.Println("Loading .env file failed, using production environment")
 	}
 	if err == nil {
 		log.Println("Loaded .env file")
 	}
-	
 }
 
 func loadConfFromEnv() (*bridge.Config, error) {
@@ -31,7 +30,6 @@ func loadConfFromEnv() (*bridge.Config, error) {
 	if err != nil {
 		return nil, fmt.Errorf("could not read BRIDGE_DB_PATH: %v", err)
 	}
-
 	// gRPC cloud server address
 	grpcuri, err := stringEnvVar("CLOUD_GRPC_URI")
 	if err != nil {

@@ -1,19 +1,21 @@
 #!/bin/bash
 #Collection of scripts to generate the protobuf files
 
-echo "Generating protobuf code for ./cloud/app..."
-cd ./cloud/app && npx buf generate || { echo "Failed to generate protobuf code for ./cloud/app"; exit 1; }
+lock="./lock"
 
+#lock
+echo "Generating protobuf code for $lock..."
+cd $lock && npx buf generate || { echo "Failed to generate protobuf code for $lock"; exit 1; }
 echo "Changing directory to ../../..."
-cd ../../ || { echo "Failed to change directory to ../../"; exit 1; }
+cd ../ || { echo "Failed to change directory to ../"; exit 1; }
 
-echo "Generating protobuf code for ./cloud/bridge..."
-cd ./cloud/bridge && buf generate || { echo "Failed to generate protobuf code for ./cloud/bridge"; exit 1; }
+#create string variabel called pairing
+pairing="./pairing"
 
+#pairing
+echo "Generating protobuf code for $pairing..."
+cd $pairing && buf generate || { echo "Failed to generate protobuf code for $pairing"; exit 1; }
 echo "Changing directory to ../../..."
-cd ../../ || { echo "Failed to change directory to ../../"; exit 1; }
-
-echo "Generating protobuf code for ./cloud/events..."
-cd ./cloud/events && buf generate || { echo "Failed to generate protobuf code for ./cloud/events"; exit 1; }
+cd ../ || { echo "Failed to change directory to ../"; exit 1; }
 
 echo "Done."
