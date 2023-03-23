@@ -12,6 +12,7 @@ require (
 
 require (
 	github.com/bufbuild/connect-go v1.5.2 // indirect
+	github.com/creack/goselect v0.1.2 // indirect
 	github.com/dietzy1/bluetooth v0.0.0-20230319223154-7f1580338489 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/go-chi/chi/v5 v5.0.8 // indirect
@@ -23,6 +24,7 @@ require (
 	github.com/saltosystems/winrt-go v0.0.0-20230124093143-967a889c6c8f // indirect
 	github.com/sirupsen/logrus v1.9.0 // indirect
 	github.com/tinygo-org/cbgo v0.0.4 // indirect
+	go.bug.st/serial v1.5.0 // indirect
 	golang.org/x/net v0.8.0 // indirect
 	golang.org/x/sys v0.6.0 // indirect
 	golang.org/x/text v0.8.0 // indirect

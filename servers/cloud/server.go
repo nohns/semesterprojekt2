@@ -7,6 +7,8 @@ import (
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 
+	"github.com/nohns/servers/pkg/middleware"
+
 	lockv1 "github.com/nohns/proto/lock/v1"
 	lockv1connect "github.com/nohns/proto/lock/v1/lockv1connect"
 	pairingv1 "github.com/nohns/proto/pairing/v1"
@@ -22,6 +24,7 @@ pbConnect "github.com/nohns/semesterprojekt2/servers/cloud/phone/v1/phonev1conne
 type server struct {
 lockv1connect.UnimplementedLockServiceHandler
 pairingv1connect.UnimplementedPairingServiceHandler
+
 lockClient lockv1.LockServiceClient
 pairingClient pairingv1.PairingServiceClient
 }
@@ -37,6 +40,7 @@ func Start() {
     lockClient := NewLockClient()
     pairingClient := NewPairingClient()
     
+    middleware.LoggingMiddleware(mux)
 
 	cloud := newServer(*lockClient, *pairingClient)
 
