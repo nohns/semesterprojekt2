@@ -16,6 +16,10 @@
 			"path": ".",
 			"name": "Root"
 		},
+		{
+			"path": "bluetooth-web-tester",
+			"name": "BLE-tester"
+		}
 	],
 	"settings": {}
 }
