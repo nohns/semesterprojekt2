@@ -48,16 +48,18 @@ func main() {
 	// Create lock domain service
 	lockService := bridge.NewLockService(store, evtbus)
 
-	conn, err := grpc.Dial(conf.CloudGRPCURI, grpc.WithInsecure())
+	// Connect to cloud gRPC server
+	cloudconn, err := grpc.Dial(conf.CloudGRPCURI, grpc.WithInsecure())
 	if err != nil {
 		log.Printf("error dialing cloud grpc: %v", err)
 		return
 	}
-	defer conn.Close()
+	defer cloudconn.Close()
+	cmdclient := bridgepb.NewCmdServiceClient(cloudconn)
 
 	// Create command stream
 	distributor := cmdstream.NewDistributor(lockService)
-	cs := cmdstream.New(bridgepb.NewCmdServiceClient(conn), distributor)
+	cs := cmdstream.New(cmdclient, distributor)
 
 	// Start listening for commands
 	if err := cs.Listen(context.TODO()); err != nil {

@@ -17,9 +17,9 @@ func loadConfFromEnv() (*bridge.Config, error) {
 		return nil, fmt.Errorf("could not read BRIDGE_DB_PATH: %v", err)
 	}
 	// gRPC cloud server address
-	grpcuri, err := stringEnvVar("CLOUD_GRPC_URI")
+	grpcuri, err := stringEnvVar("GRPC_CLOUD_URI")
 	if err != nil {
-		return nil, fmt.Errorf("could not read GRPC_ADDR: %v", err)
+		return nil, fmt.Errorf("could not read CLOUD_GRPC_URI: %v", err)
 	}
 
 	return &bridge.Config{

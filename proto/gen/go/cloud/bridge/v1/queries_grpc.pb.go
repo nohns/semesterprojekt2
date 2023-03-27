@@ -18,7 +18,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type QueryServiceClient interface {
-	GetLockState(ctx context.Context, in *GetLockStateRequest, opts ...grpc.CallOption) (*GetLockStateResponse, error)
+	StreamQueries(ctx context.Context, opts ...grpc.CallOption) (QueryService_StreamQueriesClient, error)
 }
 
 type queryServiceClient struct {
@@ -29,28 +29,50 @@ func NewQueryServiceClient(cc grpc.ClientConnInterface) QueryServiceClient {
 	return &queryServiceClient{cc}
 }
 
-func (c *queryServiceClient) GetLockState(ctx context.Context, in *GetLockStateRequest, opts ...grpc.CallOption) (*GetLockStateResponse, error) {
-	out := new(GetLockStateResponse)
-	err := c.cc.Invoke(ctx, "/dk.nohns.cloud.bridge.QueryService/GetLockState", in, out, opts...)
+func (c *queryServiceClient) StreamQueries(ctx context.Context, opts ...grpc.CallOption) (QueryService_StreamQueriesClient, error) {
+	stream, err := c.cc.NewStream(ctx, &QueryService_ServiceDesc.Streams[0], "/dk.nohns.cloud.bridge.QueryService/StreamQueries", opts...)
 	if err != nil {
 		return nil, err
 	}
-	return out, nil
+	x := &queryServiceStreamQueriesClient{stream}
+	return x, nil
+}
+
+type QueryService_StreamQueriesClient interface {
+	Send(*StreamResponse) error
+	Recv() (*StreamQuery, error)
+	grpc.ClientStream
+}
+
+type queryServiceStreamQueriesClient struct {
+	grpc.ClientStream
+}
+
+func (x *queryServiceStreamQueriesClient) Send(m *StreamResponse) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *queryServiceStreamQueriesClient) Recv() (*StreamQuery, error) {
+	m := new(StreamQuery)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 // QueryServiceServer is the server API for QueryService service.
 // All implementations should embed UnimplementedQueryServiceServer
 // for forward compatibility
 type QueryServiceServer interface {
-	GetLockState(context.Context, *GetLockStateRequest) (*GetLockStateResponse, error)
+	StreamQueries(QueryService_StreamQueriesServer) error
 }
 
 // UnimplementedQueryServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedQueryServiceServer struct {
 }
 
-func (UnimplementedQueryServiceServer) GetLockState(context.Context, *GetLockStateRequest) (*GetLockStateResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetLockState not implemented")
+func (UnimplementedQueryServiceServer) StreamQueries(QueryService_StreamQueriesServer) error {
+	return status.Errorf(codes.Unimplemented, "method StreamQueries not implemented")
 }
 
 // UnsafeQueryServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -64,22 +86,30 @@ func RegisterQueryServiceServer(s grpc.ServiceRegistrar, srv QueryServiceServer)
 	s.RegisterService(&QueryService_ServiceDesc, srv)
 }
 
-func _QueryService_GetLockState_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetLockStateRequest)
-	if err := dec(in); err != nil {
+func _QueryService_StreamQueries_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(QueryServiceServer).StreamQueries(&queryServiceStreamQueriesServer{stream})
+}
+
+type QueryService_StreamQueriesServer interface {
+	Send(*StreamQuery) error
+	Recv() (*StreamResponse, error)
+	grpc.ServerStream
+}
+
+type queryServiceStreamQueriesServer struct {
+	grpc.ServerStream
+}
+
+func (x *queryServiceStreamQueriesServer) Send(m *StreamQuery) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *queryServiceStreamQueriesServer) Recv() (*StreamResponse, error) {
+	m := new(StreamResponse)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
-	if interceptor == nil {
-		return srv.(QueryServiceServer).GetLockState(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dk.nohns.cloud.bridge.QueryService/GetLockState",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServiceServer).GetLockState(ctx, req.(*GetLockStateRequest))
-	}
-	return interceptor(ctx, in, info, handler)
+	return m, nil
 }
 
 // QueryService_ServiceDesc is the grpc.ServiceDesc for QueryService service.
@@ -88,12 +118,14 @@ func _QueryService_GetLockState_Handler(srv interface{}, ctx context.Context, de
 var QueryService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "dk.nohns.cloud.bridge.QueryService",
 	HandlerType: (*QueryServiceServer)(nil),
-	Methods: []grpc.MethodDesc{
+	Methods:     []grpc.MethodDesc{},
+	Streams: []grpc.StreamDesc{
 		{
-			MethodName: "GetLockState",
-			Handler:    _QueryService_GetLockState_Handler,
+			StreamName:    "StreamQueries",
+			Handler:       _QueryService_StreamQueries_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
 	Metadata: "cloud/bridge/v1/queries.proto",
 }

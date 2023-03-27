@@ -20,16 +20,18 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type GetLockStateRequest struct {
+type StreamQuery struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	LockId string `protobuf:"bytes,1,opt,name=lockId,proto3" json:"lockId,omitempty"`
+	Id    string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Type  string `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
+	Query string `protobuf:"bytes,3,opt,name=query,proto3" json:"query,omitempty"`
 }
 
-func (x *GetLockStateRequest) Reset() {
-	*x = GetLockStateRequest{}
+func (x *StreamQuery) Reset() {
+	*x = StreamQuery{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_cloud_bridge_v1_queries_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -37,13 +39,13 @@ func (x *GetLockStateRequest) Reset() {
 	}
 }
 
-func (x *GetLockStateRequest) String() string {
+func (x *StreamQuery) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetLockStateRequest) ProtoMessage() {}
+func (*StreamQuery) ProtoMessage() {}
 
-func (x *GetLockStateRequest) ProtoReflect() protoreflect.Message {
+func (x *StreamQuery) ProtoReflect() protoreflect.Message {
 	mi := &file_cloud_bridge_v1_queries_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -55,28 +57,44 @@ func (x *GetLockStateRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetLockStateRequest.ProtoReflect.Descriptor instead.
-func (*GetLockStateRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use StreamQuery.ProtoReflect.Descriptor instead.
+func (*StreamQuery) Descriptor() ([]byte, []int) {
 	return file_cloud_bridge_v1_queries_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GetLockStateRequest) GetLockId() string {
+func (x *StreamQuery) GetId() string {
 	if x != nil {
-		return x.LockId
+		return x.Id
 	}
 	return ""
 }
 
-type GetLockStateResponse struct {
+func (x *StreamQuery) GetType() string {
+	if x != nil {
+		return x.Type
+	}
+	return ""
+}
+
+func (x *StreamQuery) GetQuery() string {
+	if x != nil {
+		return x.Query
+	}
+	return ""
+}
+
+type StreamResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Engaged bool `protobuf:"varint,1,opt,name=engaged,proto3" json:"engaged,omitempty"`
+	QueryId  string `protobuf:"bytes,1,opt,name=queryId,proto3" json:"queryId,omitempty"`
+	Type     string `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
+	Response string `protobuf:"bytes,3,opt,name=response,proto3" json:"response,omitempty"`
 }
 
-func (x *GetLockStateResponse) Reset() {
-	*x = GetLockStateResponse{}
+func (x *StreamResponse) Reset() {
+	*x = StreamResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_cloud_bridge_v1_queries_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -84,13 +102,13 @@ func (x *GetLockStateResponse) Reset() {
 	}
 }
 
-func (x *GetLockStateResponse) String() string {
+func (x *StreamResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetLockStateResponse) ProtoMessage() {}
+func (*StreamResponse) ProtoMessage() {}
 
-func (x *GetLockStateResponse) ProtoReflect() protoreflect.Message {
+func (x *StreamResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_cloud_bridge_v1_queries_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -102,12 +120,269 @@ func (x *GetLockStateResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetLockStateResponse.ProtoReflect.Descriptor instead.
-func (*GetLockStateResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use StreamResponse.ProtoReflect.Descriptor instead.
+func (*StreamResponse) Descriptor() ([]byte, []int) {
 	return file_cloud_bridge_v1_queries_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GetLockStateResponse) GetEngaged() bool {
+func (x *StreamResponse) GetQueryId() string {
+	if x != nil {
+		return x.QueryId
+	}
+	return ""
+}
+
+func (x *StreamResponse) GetType() string {
+	if x != nil {
+		return x.Type
+	}
+	return ""
+}
+
+func (x *StreamResponse) GetResponse() string {
+	if x != nil {
+		return x.Response
+	}
+	return ""
+}
+
+type Lock struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	LockId  string `protobuf:"bytes,1,opt,name=lockId,proto3" json:"lockId,omitempty"`
+	Engaged bool   `protobuf:"varint,2,opt,name=engaged,proto3" json:"engaged,omitempty"`
+}
+
+func (x *Lock) Reset() {
+	*x = Lock{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloud_bridge_v1_queries_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Lock) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Lock) ProtoMessage() {}
+
+func (x *Lock) ProtoReflect() protoreflect.Message {
+	mi := &file_cloud_bridge_v1_queries_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Lock.ProtoReflect.Descriptor instead.
+func (*Lock) Descriptor() ([]byte, []int) {
+	return file_cloud_bridge_v1_queries_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *Lock) GetLockId() string {
+	if x != nil {
+		return x.LockId
+	}
+	return ""
+}
+
+func (x *Lock) GetEngaged() bool {
+	if x != nil {
+		return x.Engaged
+	}
+	return false
+}
+
+type StreamQuery_GetLocks struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	LockId string `protobuf:"bytes,1,opt,name=lockId,proto3" json:"lockId,omitempty"`
+}
+
+func (x *StreamQuery_GetLocks) Reset() {
+	*x = StreamQuery_GetLocks{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloud_bridge_v1_queries_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *StreamQuery_GetLocks) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StreamQuery_GetLocks) ProtoMessage() {}
+
+func (x *StreamQuery_GetLocks) ProtoReflect() protoreflect.Message {
+	mi := &file_cloud_bridge_v1_queries_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StreamQuery_GetLocks.ProtoReflect.Descriptor instead.
+func (*StreamQuery_GetLocks) Descriptor() ([]byte, []int) {
+	return file_cloud_bridge_v1_queries_proto_rawDescGZIP(), []int{0, 0}
+}
+
+func (x *StreamQuery_GetLocks) GetLockId() string {
+	if x != nil {
+		return x.LockId
+	}
+	return ""
+}
+
+type StreamQuery_GetLockState struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	LockId string `protobuf:"bytes,1,opt,name=lockId,proto3" json:"lockId,omitempty"`
+}
+
+func (x *StreamQuery_GetLockState) Reset() {
+	*x = StreamQuery_GetLockState{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloud_bridge_v1_queries_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *StreamQuery_GetLockState) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StreamQuery_GetLockState) ProtoMessage() {}
+
+func (x *StreamQuery_GetLockState) ProtoReflect() protoreflect.Message {
+	mi := &file_cloud_bridge_v1_queries_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StreamQuery_GetLockState.ProtoReflect.Descriptor instead.
+func (*StreamQuery_GetLockState) Descriptor() ([]byte, []int) {
+	return file_cloud_bridge_v1_queries_proto_rawDescGZIP(), []int{0, 1}
+}
+
+func (x *StreamQuery_GetLockState) GetLockId() string {
+	if x != nil {
+		return x.LockId
+	}
+	return ""
+}
+
+type StreamResponse_LockCollection struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Locks []*Lock `protobuf:"bytes,1,rep,name=locks,proto3" json:"locks,omitempty"`
+}
+
+func (x *StreamResponse_LockCollection) Reset() {
+	*x = StreamResponse_LockCollection{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloud_bridge_v1_queries_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *StreamResponse_LockCollection) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StreamResponse_LockCollection) ProtoMessage() {}
+
+func (x *StreamResponse_LockCollection) ProtoReflect() protoreflect.Message {
+	mi := &file_cloud_bridge_v1_queries_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StreamResponse_LockCollection.ProtoReflect.Descriptor instead.
+func (*StreamResponse_LockCollection) Descriptor() ([]byte, []int) {
+	return file_cloud_bridge_v1_queries_proto_rawDescGZIP(), []int{1, 0}
+}
+
+func (x *StreamResponse_LockCollection) GetLocks() []*Lock {
+	if x != nil {
+		return x.Locks
+	}
+	return nil
+}
+
+type StreamResponse_LockState struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Engaged bool `protobuf:"varint,1,opt,name=engaged,proto3" json:"engaged,omitempty"`
+}
+
+func (x *StreamResponse_LockState) Reset() {
+	*x = StreamResponse_LockState{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloud_bridge_v1_queries_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *StreamResponse_LockState) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StreamResponse_LockState) ProtoMessage() {}
+
+func (x *StreamResponse_LockState) ProtoReflect() protoreflect.Message {
+	mi := &file_cloud_bridge_v1_queries_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StreamResponse_LockState.ProtoReflect.Descriptor instead.
+func (*StreamResponse_LockState) Descriptor() ([]byte, []int) {
+	return file_cloud_bridge_v1_queries_proto_rawDescGZIP(), []int{1, 1}
+}
+
+func (x *StreamResponse_LockState) GetEngaged() bool {
 	if x != nil {
 		return x.Engaged
 	}
@@ -120,26 +395,44 @@ var file_cloud_bridge_v1_queries_proto_rawDesc = []byte{
 	0x0a, 0x1d, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x2f, 0x62, 0x72, 0x69, 0x64, 0x67, 0x65, 0x2f, 0x76,
 	0x31, 0x2f, 0x71, 0x75, 0x65, 0x72, 0x69, 0x65, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12,
 	0x15, 0x64, 0x6b, 0x2e, 0x6e, 0x6f, 0x68, 0x6e, 0x73, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x2e,
-	0x62, 0x72, 0x69, 0x64, 0x67, 0x65, 0x22, 0x2d, 0x0a, 0x13, 0x47, 0x65, 0x74, 0x4c, 0x6f, 0x63,
-	0x6b, 0x53, 0x74, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x16, 0x0a,
+	0x62, 0x72, 0x69, 0x64, 0x67, 0x65, 0x22, 0x93, 0x01, 0x0a, 0x0b, 0x53, 0x74, 0x72, 0x65, 0x61,
+	0x6d, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x71, 0x75,
+	0x65, 0x72, 0x79, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x71, 0x75, 0x65, 0x72, 0x79,
+	0x1a, 0x22, 0x0a, 0x08, 0x47, 0x65, 0x74, 0x4c, 0x6f, 0x63, 0x6b, 0x73, 0x12, 0x16, 0x0a, 0x06,
+	0x6c, 0x6f, 0x63, 0x6b, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6c, 0x6f,
+	0x63, 0x6b, 0x49, 0x64, 0x1a, 0x26, 0x0a, 0x0c, 0x47, 0x65, 0x74, 0x4c, 0x6f, 0x63, 0x6b, 0x53,
+	0x74, 0x61, 0x74, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x6c, 0x6f, 0x63, 0x6b, 0x49, 0x64, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6c, 0x6f, 0x63, 0x6b, 0x49, 0x64, 0x22, 0xc6, 0x01, 0x0a,
+	0x0e, 0x53, 0x74, 0x72, 0x65, 0x61, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x18, 0x0a, 0x07, 0x71, 0x75, 0x65, 0x72, 0x79, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x07, 0x71, 0x75, 0x65, 0x72, 0x79, 0x49, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x79, 0x70,
+	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x1a, 0x0a,
+	0x08, 0x72, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x08, 0x72, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x1a, 0x43, 0x0a, 0x0e, 0x4c, 0x6f, 0x63,
+	0x6b, 0x43, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x31, 0x0a, 0x05, 0x6c,
+	0x6f, 0x63, 0x6b, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x64, 0x6b, 0x2e,
+	0x6e, 0x6f, 0x68, 0x6e, 0x73, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x2e, 0x62, 0x72, 0x69, 0x64,
+	0x67, 0x65, 0x2e, 0x4c, 0x6f, 0x63, 0x6b, 0x52, 0x05, 0x6c, 0x6f, 0x63, 0x6b, 0x73, 0x1a, 0x25,
+	0x0a, 0x09, 0x4c, 0x6f, 0x63, 0x6b, 0x53, 0x74, 0x61, 0x74, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x65,
+	0x6e, 0x67, 0x61, 0x67, 0x65, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x65, 0x6e,
+	0x67, 0x61, 0x67, 0x65, 0x64, 0x22, 0x38, 0x0a, 0x04, 0x4c, 0x6f, 0x63, 0x6b, 0x12, 0x16, 0x0a,
 	0x06, 0x6c, 0x6f, 0x63, 0x6b, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6c,
-	0x6f, 0x63, 0x6b, 0x49, 0x64, 0x22, 0x30, 0x0a, 0x14, 0x47, 0x65, 0x74, 0x4c, 0x6f, 0x63, 0x6b,
-	0x53, 0x74, 0x61, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a,
-	0x07, 0x65, 0x6e, 0x67, 0x61, 0x67, 0x65, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07,
-	0x65, 0x6e, 0x67, 0x61, 0x67, 0x65, 0x64, 0x32, 0x77, 0x0a, 0x0c, 0x51, 0x75, 0x65, 0x72, 0x79,
-	0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x67, 0x0a, 0x0c, 0x47, 0x65, 0x74, 0x4c, 0x6f,
-	0x63, 0x6b, 0x53, 0x74, 0x61, 0x74, 0x65, 0x12, 0x2a, 0x2e, 0x64, 0x6b, 0x2e, 0x6e, 0x6f, 0x68,
+	0x6f, 0x63, 0x6b, 0x49, 0x64, 0x12, 0x18, 0x0a, 0x07, 0x65, 0x6e, 0x67, 0x61, 0x67, 0x65, 0x64,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x65, 0x6e, 0x67, 0x61, 0x67, 0x65, 0x64, 0x32,
+	0x6e, 0x0a, 0x0c, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12,
+	0x5e, 0x0a, 0x0d, 0x53, 0x74, 0x72, 0x65, 0x61, 0x6d, 0x51, 0x75, 0x65, 0x72, 0x69, 0x65, 0x73,
+	0x12, 0x25, 0x2e, 0x64, 0x6b, 0x2e, 0x6e, 0x6f, 0x68, 0x6e, 0x73, 0x2e, 0x63, 0x6c, 0x6f, 0x75,
+	0x64, 0x2e, 0x62, 0x72, 0x69, 0x64, 0x67, 0x65, 0x2e, 0x53, 0x74, 0x72, 0x65, 0x61, 0x6d, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x1a, 0x22, 0x2e, 0x64, 0x6b, 0x2e, 0x6e, 0x6f, 0x68,
 	0x6e, 0x73, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x2e, 0x62, 0x72, 0x69, 0x64, 0x67, 0x65, 0x2e,
-	0x47, 0x65, 0x74, 0x4c, 0x6f, 0x63, 0x6b, 0x53, 0x74, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x1a, 0x2b, 0x2e, 0x64, 0x6b, 0x2e, 0x6e, 0x6f, 0x68, 0x6e, 0x73, 0x2e, 0x63,
-	0x6c, 0x6f, 0x75, 0x64, 0x2e, 0x62, 0x72, 0x69, 0x64, 0x67, 0x65, 0x2e, 0x47, 0x65, 0x74, 0x4c,
-	0x6f, 0x63, 0x6b, 0x53, 0x74, 0x61, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x42, 0x47, 0x5a, 0x45, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6e,
-	0x6f, 0x68, 0x6e, 0x73, 0x2f, 0x73, 0x65, 0x6d, 0x65, 0x73, 0x74, 0x65, 0x72, 0x70, 0x72, 0x6f,
-	0x6a, 0x65, 0x6b, 0x74, 0x32, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x67, 0x65, 0x6e, 0x2f,
-	0x67, 0x6f, 0x2f, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x2f, 0x62, 0x72, 0x69, 0x64, 0x67, 0x65, 0x2f,
-	0x76, 0x31, 0x3b, 0x62, 0x72, 0x69, 0x64, 0x67, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x33,
+	0x53, 0x74, 0x72, 0x65, 0x61, 0x6d, 0x51, 0x75, 0x65, 0x72, 0x79, 0x28, 0x01, 0x30, 0x01, 0x42,
+	0x47, 0x5a, 0x45, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6e, 0x6f,
+	0x68, 0x6e, 0x73, 0x2f, 0x73, 0x65, 0x6d, 0x65, 0x73, 0x74, 0x65, 0x72, 0x70, 0x72, 0x6f, 0x6a,
+	0x65, 0x6b, 0x74, 0x32, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x67, 0x65, 0x6e, 0x2f, 0x67,
+	0x6f, 0x2f, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x2f, 0x62, 0x72, 0x69, 0x64, 0x67, 0x65, 0x2f, 0x76,
+	0x31, 0x3b, 0x62, 0x72, 0x69, 0x64, 0x67, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -154,19 +447,25 @@ func file_cloud_bridge_v1_queries_proto_rawDescGZIP() []byte {
 	return file_cloud_bridge_v1_queries_proto_rawDescData
 }
 
-var file_cloud_bridge_v1_queries_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_cloud_bridge_v1_queries_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_cloud_bridge_v1_queries_proto_goTypes = []interface{}{
-	(*GetLockStateRequest)(nil),  // 0: dk.nohns.cloud.bridge.GetLockStateRequest
-	(*GetLockStateResponse)(nil), // 1: dk.nohns.cloud.bridge.GetLockStateResponse
+	(*StreamQuery)(nil),                   // 0: dk.nohns.cloud.bridge.StreamQuery
+	(*StreamResponse)(nil),                // 1: dk.nohns.cloud.bridge.StreamResponse
+	(*Lock)(nil),                          // 2: dk.nohns.cloud.bridge.Lock
+	(*StreamQuery_GetLocks)(nil),          // 3: dk.nohns.cloud.bridge.StreamQuery.GetLocks
+	(*StreamQuery_GetLockState)(nil),      // 4: dk.nohns.cloud.bridge.StreamQuery.GetLockState
+	(*StreamResponse_LockCollection)(nil), // 5: dk.nohns.cloud.bridge.StreamResponse.LockCollection
+	(*StreamResponse_LockState)(nil),      // 6: dk.nohns.cloud.bridge.StreamResponse.LockState
 }
 var file_cloud_bridge_v1_queries_proto_depIdxs = []int32{
-	0, // 0: dk.nohns.cloud.bridge.QueryService.GetLockState:input_type -> dk.nohns.cloud.bridge.GetLockStateRequest
-	1, // 1: dk.nohns.cloud.bridge.QueryService.GetLockState:output_type -> dk.nohns.cloud.bridge.GetLockStateResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	2, // 0: dk.nohns.cloud.bridge.StreamResponse.LockCollection.locks:type_name -> dk.nohns.cloud.bridge.Lock
+	1, // 1: dk.nohns.cloud.bridge.QueryService.StreamQueries:input_type -> dk.nohns.cloud.bridge.StreamResponse
+	0, // 2: dk.nohns.cloud.bridge.QueryService.StreamQueries:output_type -> dk.nohns.cloud.bridge.StreamQuery
+	2, // [2:3] is the sub-list for method output_type
+	1, // [1:2] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_cloud_bridge_v1_queries_proto_init() }
@@ -176,7 +475,7 @@ func file_cloud_bridge_v1_queries_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_cloud_bridge_v1_queries_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetLockStateRequest); i {
+			switch v := v.(*StreamQuery); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -188,7 +487,67 @@ func file_cloud_bridge_v1_queries_proto_init() {
 			}
 		}
 		file_cloud_bridge_v1_queries_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetLockStateResponse); i {
+			switch v := v.(*StreamResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloud_bridge_v1_queries_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Lock); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloud_bridge_v1_queries_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*StreamQuery_GetLocks); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloud_bridge_v1_queries_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*StreamQuery_GetLockState); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloud_bridge_v1_queries_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*StreamResponse_LockCollection); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloud_bridge_v1_queries_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*StreamResponse_LockState); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -206,7 +565,7 @@ func file_cloud_bridge_v1_queries_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_cloud_bridge_v1_queries_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

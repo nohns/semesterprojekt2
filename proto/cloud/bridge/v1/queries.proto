@@ -5,13 +5,46 @@ package dk.nohns.cloud.bridge;
 option go_package = "github.com/nohns/semesterprojekt2/proto/gen/go/cloud/bridge/v1;bridge";
 
 service QueryService {
-    rpc GetLockState(GetLockStateRequest) returns (GetLockStateResponse);
+    rpc StreamQueries(stream StreamResponse) returns (stream StreamQuery);
 }
 
-message GetLockStateRequest {
+/* ------------------ *
+ * rpc StreamQueries *
+ * ------------------ */
+
+message StreamQuery {
+    string id = 1;
+    string type = 2;
+    string query = 3;
+
+    message GetLocks {
+        string lockId = 1;
+    }
+
+    message GetLockState {
+        string lockId = 1;
+    }
+}
+
+message StreamResponse {
+    string queryId = 1;
+    string type = 2;
+    string response = 3;
+
+    message LockCollection {
+        repeated Lock locks = 1;
+    }
+
+    message LockState {
+        bool engaged = 1;
+    }
+}
+
+/* ------------------ *
+ * Projection messages *
+ * ------------------ */
+
+message Lock {
     string lockId = 1;
-}
-
-message GetLockStateResponse {
-    bool engaged = 1;
+    bool engaged = 2;
 }
