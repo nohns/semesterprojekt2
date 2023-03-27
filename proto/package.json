@@ -1,0 +1,22 @@
+{
+  "name": "proto",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@bufbuild/buf": "^1.15.0-1",
+    "@bufbuild/protoc-gen-connect-es": "^0.8.4",
+    "@bufbuild/protoc-gen-es": "^1.1.1"
+  },
+  "dependencies": {
+    "@bufbuild/connect": "^0.8.4",
+    "@bufbuild/connect-web": "^0.8.4",
+    "@bufbuild/protobuf": "^1.1.1"
+  }
+}

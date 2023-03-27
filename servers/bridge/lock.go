@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/nohns/semesterprojekt2/pkg/event"
-	"github.com/nohns/semesterprojekt2/pkg/eventsource"
-	"github.com/nohns/semesterprojekt2/proto/gen/go/bridge/events/v1"
+	"github.com/nohns/proto/bridge/events/v1"
+	"github.com/nohns/servers/pkg/event"
+	"github.com/nohns/servers/pkg/eventsource"
 )
 
 // Command for engaging a lock

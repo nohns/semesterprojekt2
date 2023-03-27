@@ -1,6 +1,13 @@
 {
 	"folders": [
 		{
+			"path": "."
+		},
+		{
+			"name": "uart",
+			"path": "arduino/uart"
+		},
+		{
 			"path": "./servers",
 			"name": "Server"
 		},
@@ -11,10 +18,6 @@
 		{
 			"path": "app",
 			"name": "Native app"
-		},
-		{
-			"path": ".",
-			"name": "Root"
 		},
 		{
 			"path": "bluetooth-web-tester",

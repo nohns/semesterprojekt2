@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nohns/semesterprojekt2/pkg/event"
-	"github.com/nohns/semesterprojekt2/pkg/eventsource"
+	"github.com/nohns/servers/pkg/event"
+	"github.com/nohns/servers/pkg/eventsource"
 )
 
 type EventStore struct {

@@ -5,7 +5,7 @@ import (
 	"sort"
 	"sync"
 
-	"github.com/nohns/semesterprojekt2/pkg/event"
+	"github.com/nohns/servers/pkg/event"
 )
 
 var consumeContext = context.Background()

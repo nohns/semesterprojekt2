@@ -1,1 +1,8 @@
-version: v1beta1
+# @format
+version: v1
+breaking:
+  use:
+    - FILE
+lint:
+  use:
+    - DEFAULT
