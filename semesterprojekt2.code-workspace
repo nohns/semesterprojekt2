@@ -16,7 +16,7 @@
 			"name": "Protobufs"
 		},
 		{
-			"path": "app",
+			"path": "LockApp",
 			"name": "Native app"
 		},
 		{
