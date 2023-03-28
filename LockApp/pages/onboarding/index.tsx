@@ -9,11 +9,9 @@ import {
   Animated,
 } from 'react-native';
 
-interface OnboardingProps {
-  navigation: any;
-}
+interface OnboardingProps {}
 
-function Onboarding({navigation}: OnboardingProps) {
+function Onboarding({}: OnboardingProps) {
   const [currentIndex, setCurrentIndex] = React.useState(0);
   const scrollX = React.useRef(new Animated.Value(0)).current;
   const slidesRef = React.useRef(null);
@@ -103,5 +101,3 @@ function OnboardingItem({item}: {item: {title: string; description: string}}) {
     </View>
   );
 }
-
-function Paginator() {}

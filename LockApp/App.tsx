@@ -3,10 +3,12 @@ import {StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 //import {Platform} from 'react-native';
 
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import createNativeStackNavigator from '@react-navigation/native-stack/src/navigators/createNativeStackNavigator';
 import Home from './pages/Home';
 //import Pair from './pages/Pair';
-import Onboarding from './pages/Onboarding';
+import Onboarding from './pages/onboarding';
+import Bluetooth from './components/Bluetooth';
+import Welcome from './pages/onboarding/Welcome';
 
 // Import polyfills if not running on web.  Attempting to import these in web mode will result in numerous errors
 // trying to access react-native APIs
@@ -15,10 +17,10 @@ import Onboarding from './pages/Onboarding';
   import('react-native-polyfill-globals');
 } */
 
+const Stack = createNativeStackNavigator();
+
 function App() {
   const [paired, setPaired] = React.useState(true);
-
-  const Stack = createNativeStackNavigator();
 
   //custom transition that moves to the left
 
@@ -27,7 +29,8 @@ function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator
+      <Welcome />
+      {/*<Stack.Navigator
         screenOptions={{headerShown: false}}
         initialRouteName="Home">
         <Stack.Screen
@@ -40,7 +43,7 @@ function App() {
           component={Home}
           initialParams={{Stack, styles}}
         />
-      </Stack.Navigator>
+  </Stack.Navigator>*/}
     </NavigationContainer>
   );
 }
