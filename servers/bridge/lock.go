@@ -1,14 +1,5 @@
 package bridge
 
-import (
-	"context"
-	"fmt"
-
-	"github.com/nohns/proto/bridge/events/v1"
-	"github.com/nohns/servers/pkg/event"
-	"github.com/nohns/servers/pkg/eventsource"
-)
-
 // Command for engaging a lock
 type engageLock struct{}
 
@@ -24,7 +15,7 @@ type Lock struct {
 	Engaged bool
 }
 
-func (l *Lock) Apply(evts ...*event.Event) error {
+/* func (l *Lock) Apply(evts ...*event.Event) error {
 	for _, e := range evts {
 		switch e.Type {
 		case "LockEngaged":
@@ -135,3 +126,4 @@ func (s *LockService) processCmdForLock(ctx context.Context, lockId string, cmd 
 
 	return nil
 }
+*/
