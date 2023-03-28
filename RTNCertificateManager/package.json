@@ -1,0 +1,43 @@
+{
+  "name": "rtn-certificate-manager",
+  "version": "0.0.1",
+  "description": "Manages certificates for the semester project LockApp",
+  "react-native": "js/index",
+  "source": "js/index",
+  "files": [
+    "js",
+    "android",
+    "ios",
+    "rtn-certificate-manager.podspec",
+    "!android/build",
+    "!ios/build",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__"
+  ],
+  "keywords": [
+    "react-native",
+    "ios",
+    "android"
+  ],
+  "repository": "https://github.com/nohns/semesterprojekt2",
+  "author": "Asger Nohns <asger@nohns.dk> (https://github.com/nohns)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nohns/semesterprojekt2/issues"
+  },
+  "homepage": "https://github.com/nohns/semesterprojekt2/tree/main/RTNCertificateManager",
+  "devDependencies": {},
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
+  },
+  "codegenConfig": {
+    "name": "RTNCertificateManagerSpec",
+    "type": "modules",
+    "jsSrcsDir": "js",
+    "android": {
+      "javaPackageName": "com.rtncertificatemanager"
+    }
+  }
+}

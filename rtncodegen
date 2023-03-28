@@ -1,0 +1,4 @@
+#!/bin/bash
+node LockApp/node_modules/react-native/scripts/generate-codegen-artifacts.js \
+  --path LockApp/ \
+  --outputPath RTNCertificateManager/generated/
