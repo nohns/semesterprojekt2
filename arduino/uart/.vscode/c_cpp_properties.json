@@ -1,0 +1,42 @@
+//
+// !!! WARNING !!! AUTO-GENERATED FILE!
+// PLEASE DO NOT MODIFY IT AND USE "platformio.ini":
+// https://docs.platformio.org/page/projectconf/section_env_build.html#build-flags
+//
+{
+    "configurations": [
+        {
+            "name": "PlatformIO",
+            "includePath": [
+                "/Users/asger/Projects/semesterprojekt2/arduino/uart/include",
+                "/Users/asger/Projects/semesterprojekt2/arduino/uart/src",
+                "/Users/asger/Projects/semesterprojekt2/arduino/uart/lib/uart",
+                ""
+            ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "path": [
+                    "/Users/asger/Projects/semesterprojekt2/arduino/uart/include",
+                    "/Users/asger/Projects/semesterprojekt2/arduino/uart/src",
+                    "/Users/asger/Projects/semesterprojekt2/arduino/uart/lib/uart",
+                    ""
+                ]
+            },
+            "defines": [
+                "F_CPU=16000000L",
+                "PLATFORMIO=60106",
+                "ARDUINO_AVR_MEGA2560",
+                "__AVR_ATmega2560__",
+                ""
+            ],
+            "cStandard": "c11",
+            "cppStandard": "c++11",
+            "compilerPath": "/Users/asger/.platformio/packages/toolchain-atmelavr/bin/avr-gcc",
+            "compilerArgs": [
+                "-mmcu=atmega2560",
+                ""
+            ]
+        }
+    ],
+    "version": 4
+}
