@@ -1,12 +1,9 @@
 package main
 
 import (
-	"database/sql"
-	"fmt"
-	"log"
-
+	"github.com/nohns/servers/bridge/domain"
 	"github.com/nohns/servers/bridge/server"
-	"github.com/nohns/servers/pkg/sqlite"
+	"github.com/nohns/servers/pkg/config"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -14,17 +11,17 @@ import (
 func main() {
 
 	//no magic autoloading of .env file
-	readEnvfile()
+	config.ReadEnvfile()
 
 	// Read config
-	conf, err := loadConfFromEnv()
+	/* conf, err := loadConfFromEnv()
 	if err != nil {
 		log.Printf("error loading config: %v", err)
 		return
-	}
+	} */
 
 	// Open database
-	db, err := sql.Open("sqlite3", fmt.Sprintf("file:%s", conf.DBPath))
+	/* db, err := sql.Open("sqlite3", fmt.Sprintf("file:%s", conf.DBPath))
 	if err != nil {
 		log.Printf("error opening database: %v", err)
 		return
@@ -33,7 +30,7 @@ func main() {
 		log.Printf("error migrating database: %v", err)
 		return
 	}
-	defer db.Close()
+	defer db.Close() */
 
 	// Create event store
 	//var store eventsource.EventStore = sqlite.NewEventSource(db)
@@ -45,14 +42,26 @@ func main() {
 	//lockService := bridge.NewLockService(store, evtbus)
 
 	//start rest server
-	server.StartRESTServer()
+	//server.StartRESTServer()
 
-	server.StartGRPCServer()
+	//Repository layer
+	//repo := repository.New()
+
+	//uart layer
+	//uart := uart.New()
+
+	//Domain layer
+	domain := domain.New()
+
+	//Server layer
+	server.StartGRPCServer(domain)
+
+	//server.NewTunnelServer()
 
 	// Create command stream
 	/* distributor := cmdstream.NewDistributor(lockService)
 	cs := cmdstream.New(bridgepb.NewCmdServiceClient(conn), distributor)
-	
+
 
 	// Start listening for commands
 	if err := cs.Listen(context.TODO()); err != nil {

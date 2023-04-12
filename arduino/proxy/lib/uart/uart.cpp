@@ -7,6 +7,7 @@
 #include <avr/io.h>
 #include <stdlib.h>
 #include "uart.h"
+#include <string.h>
 
 // Constructor
 Uart::Uart(unsigned long baudRate, unsigned char dataBit)
@@ -17,12 +18,18 @@ Uart::Uart(unsigned long baudRate, unsigned char dataBit)
         // Receiver enabled
         // Transmitter enabled
         // No 9 bit operation
-        UCSR0B = 0b00011000;
+        // UCSR0B = 0b00011000;
         // Asynchronous operation, 1 stop bit
         // Bit 2 and bit 1 controls the number of data bits
-        UCSR0C = (dataBit - 5) << 1;
+        // UCSR0C = (dataBit - 5) << 1;
         // Set Baud Rate according to the parameter baudRate
-        UBRR0 = XTAL / (16 * baudRate) - 1;
+        // UBRR0 = XTAL / (16 * baudRate) - 1;
+
+        UCSR0B = 0b00011000;                // Asynchronous operation, 1 stop bit
+        UCSR0C = (dataBit - 5) << 1;        // Bit 2 and bit 1 controls the number of data bits
+        UCSR0C &= ~(1 << UPM01);            // Set parity to None
+        UCSR0C &= ~(1 << UPM00);            // Set parity to None
+        UBRR0 = XTAL / (16 * baudRate) - 1; // Set Baud Rate according to the parameter baudRate
     }
 }
 
@@ -75,4 +82,39 @@ void Uart::sendInteger(int number)
     itoa(number, array, 10);
     // - then send the string
     sendString(array);
+}
+
+void Uart::readString(char *buffer, int bufferLength)
+{
+}
+
+typedef struct
+{
+    int value1;
+    float value2;
+    char str[10];
+} Data;
+
+void serializeData(Data data, unsigned char *buffer)
+{
+    // Copy the values into the buffer one by one
+    memcpy(buffer, &data.value1, sizeof(data.value1));
+    buffer += sizeof(data.value1);
+    memcpy(buffer, &data.value2, sizeof(data.value2));
+    buffer += sizeof(data.value2);
+    memcpy(buffer, data.str, sizeof(data.str));
+}
+
+Data deserializeData(unsigned char *buffer)
+{
+    Data data;
+
+    // Copy the values out of the buffer one by one
+    memcpy(&data.value1, buffer, sizeof(data.value1));
+    buffer += sizeof(data.value1);
+    memcpy(&data.value2, buffer, sizeof(data.value2));
+    buffer += sizeof(data.value2);
+    memcpy(data.str, buffer, sizeof(data.str));
+
+    return data;
 }

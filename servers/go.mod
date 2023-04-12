@@ -15,10 +15,12 @@ require (
 	github.com/creack/goselect v0.1.2 // indirect
 	github.com/dietzy1/bluetooth v0.0.0-20230319223154-7f1580338489 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
+	github.com/fullstorydev/grpchan v1.1.1 // indirect
 	github.com/go-chi/chi/v5 v5.0.8 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/godbus/dbus/v5 v5.0.3 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
+	github.com/jhump/grpctunnel v0.1.0 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/muka/go-bluetooth v0.0.0-20220830075246-0746e3a1ea53 // indirect
 	github.com/saltosystems/winrt-go v0.0.0-20230124093143-967a889c6c8f // indirect

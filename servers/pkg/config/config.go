@@ -14,7 +14,7 @@ import (
 
 func ReadEnvfile() {
 	//Read the .env file
-	err := godotenv.Load("../.env")
+	err := godotenv.Load("../../.env")
 	if err != nil {
 		log.Println("Loading .env file failed, using production environment")
 	}

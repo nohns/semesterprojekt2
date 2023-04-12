@@ -13,6 +13,8 @@ private:
 public:
     Uart(unsigned long baudRate, unsigned char dataBit);
 
+    void readString(char *buffer, int bufferLength);
+
     char readChar();
     void sendString(char *string);
     void sendInteger(int number);
