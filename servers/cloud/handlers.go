@@ -6,6 +6,7 @@ import (
 	"log"
 
 	"github.com/bufbuild/connect-go"
+
 	lockv1 "github.com/nohns/proto/lock/v1"
 	pairingv1 "github.com/nohns/proto/pairing/v1"
 )
@@ -29,16 +30,18 @@ func (s *server) GetLockState(ctx context.Context, in *connect.Request[lockv1.Ge
 	log.Println("req: ", req)
 
 	// call lock service
-	res, err := s.lockClient.GetLockState(ctx, req)
-	if err != nil {
-		log.Println("err: ", err)
-		return nil, err
-	}
-	log.Println("res: ", res)
+	/* 	res, err := s.lockClient.GetLockState(ctx, req)
+	   	if err != nil {
+	   		log.Println("err: ", err)
+	   		return nil, err
+	   	}
+	   	log.Println("res: ", res) */
 
 	// convert response to connect response
 	resp := &connect.Response[lockv1.GetLockStateResponse]{
-		Msg: res,
+		Msg: &lockv1.GetLockStateResponse{
+			Locked: true,
+		},
 	}
 
 	return resp, nil
@@ -50,13 +53,13 @@ func (s *server) GetLockState(ctx context.Context, in *connect.Request[lockv1.Ge
 func (s *server) SetLockState(ctx context.Context, in *connect.Request[lockv1.SetLockStateRequest]) (*connect.Response[lockv1.SetLockStateResponse], error) {
 	log.Println("SetLockState called")
 	// Create a request to the lock service.
-	req := &lockv1.SetLockStateRequest{
+	/* req := &lockv1.SetLockStateRequest{
 		Id:     in.Msg.Id,
 		Locked: in.Msg.Locked,
-	}
+	} */
 
 	// Call the lock service.
-	res, err := s.lockClient.SetLockState(ctx, req)
+	/* res, err := s.lockClient.SetLockState(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -73,9 +76,9 @@ func (s *server) SetLockState(ctx context.Context, in *connect.Request[lockv1.Se
 		Msg: &lockv1.SetLockStateResponse{
 			Locked: true,
 		},
-	}
+	} */
 
-	return resp, nil
+	return nil, nil
 }
 
 // Register is a unary RPC that receives a CSR and returns a certificate
@@ -85,26 +88,28 @@ func (s *server) SetLockState(ctx context.Context, in *connect.Request[lockv1.Se
 // request.
 func (s *server) Register(ctx context.Context, in *connect.Request[pairingv1.RegisterRequest]) (*connect.Response[pairingv1.RegisterResponse], error) {
 	log.Println("Register called")
+
 	//validate its not empty
-	if in.Msg.Csr == nil {
-		return nil, errors.New("name is required")
-	}
+	/* 	if in.Msg.Csr == nil {
+	   		return nil, errors.New("name is required")
+	   	}
 
-	//create request for pairing service
-	req := &pairingv1.RegisterRequest{
-		Csr: in.Msg.Csr,
-	}
 
-	//call pairing service
-	res, err := s.pairingClient.Register(ctx, req)
-	if err != nil {
-		return nil, err
-	}
+	   	//create request for pairing service
+	   	req := &pairingv1.RegisterRequest{
+	   		Csr: in.Msg.Csr,
+	   	}
 
-	//convert response to connect response
-	resp := &connect.Response[pairingv1.RegisterResponse]{
-		Msg: res,
-	}
+	   	//call pairing service
+	   	res, err := s.pairingClient.Register(ctx, req)
+	   	if err != nil {
+	   		return nil, err
+	   	}
 
-	return resp, nil
+	   	//convert response to connect response
+	   	resp := &connect.Response[pairingv1.RegisterResponse]{
+	   		Msg: res,
+	   	} */
+
+	return nil, nil
 }

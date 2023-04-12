@@ -41,6 +41,7 @@ func (s *Server) GetLockState(ctx context.Context, req *lockv1.GetLockStateReque
 	}
 
 	//Call buissness logic
+	s.domain.GetLock()
 
 	//Return response
 	return &lockv1.GetLockStateResponse{

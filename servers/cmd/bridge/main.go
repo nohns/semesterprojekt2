@@ -47,11 +47,16 @@ func main() {
 	//Repository layer
 	//repo := repository.New()
 
+	//uart layer
+	//uart := uart.New()
+
 	//Domain layer
 	domain := domain.New()
 
 	//Server layer
 	server.StartGRPCServer(domain)
+
+	//server.NewTunnelServer()
 
 	// Create command stream
 	/* distributor := cmdstream.NewDistributor(lockService)

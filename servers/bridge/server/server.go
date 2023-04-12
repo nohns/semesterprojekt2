@@ -39,8 +39,13 @@ func StartGRPCServer(domain domain) {
 	s := grpc.NewServer(
 		grpc.UnaryInterceptor(mw.LoggingMiddlewareGrpc),
 	)
-	//Inject dependencies into the server
+
 	dependencies := newServer(domain)
+
+	//Create tunnel
+	ServeTunnel(s, dependencies)
+
+	//Inject dependencies into the server
 
 	//Register the server
 	pairingv1.RegisterPairingServiceServer(s, dependencies)

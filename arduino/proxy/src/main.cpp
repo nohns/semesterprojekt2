@@ -10,19 +10,20 @@ int main()
 
   for (;;)
   {
-    uart.sendString("Hello World!");
-    char rx = uart.readChar();
-    if (rx == 'a')
+
+    // char rx = uart.readChar();
+
+    char buffer[100];
+    uart.readString(buffer, sizeof(buffer));
+    uart.sendString(buffer);
+
+    if (buffer == "123")
     {
-      uart.sendString("You pressed a");
+      uart.sendString("123");
     }
-    else if (rx == 'b')
+    else if (buffer == "b")
     {
       uart.sendString("You pressed b");
-    }
-    else if (rx == 'c')
-    {
-      uart.sendString("You pressed c");
     }
   }
 

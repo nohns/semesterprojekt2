@@ -18,9 +18,6 @@ import (
 	pairingv1connect "github.com/nohns/proto/pairing/v1/pairingv1connect"
 )
 
-/* pb "github.com/nohns/semesterprojekt2/servers/cloud/phone/v1"
-pbConnect "github.com/nohns/semesterprojekt2/servers/cloud/phone/v1/phonev1connect" */
-
 //Server responbilbe for communication with the react native phone app
 
 // This struct should take in
@@ -44,12 +41,8 @@ func Start() {
 	mux := http.NewServeMux()
 
 	//Instantiate the clients
-	lockClient /* , lockConn */ := NewLockClient()
-	pairingClient /* , pairingConn */ := NewPairingClient()
-
-	//Open tunnel server
-	//go NewTunnel(lockConn)
-	//go NewTunnel(pairingConn)
+	lockClient := NewLockClient()
+	pairingClient := NewPairingClient()
 
 	middleware.LoggingMiddleware(mux)
 
