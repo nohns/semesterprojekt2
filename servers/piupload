@@ -1,0 +1,5 @@
+#!/bin/bash
+GOOS=linux GOARCH=arm GOARM=5 go build -o ./bin/bridge cmd/bridge/*.go
+scp ./bin/bridge pi@raspberrypi.local:/home/pi/bridge
+ssh -t -t pi@raspberrypi.local "./bridge"
+
