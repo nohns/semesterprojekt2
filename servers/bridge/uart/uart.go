@@ -1,6 +1,7 @@
 package uart
 
 import (
+	"bufio"
 	"context"
 	"errors"
 	"fmt"
@@ -9,6 +10,8 @@ import (
 	"go.bug.st/serial"
 )
 
+// You need to manually check which port your arduino is connected to
+// Could potentially be automated :TODO:
 const USB = "/dev/tty.usbmodem14501"
 
 /* func Uart() {
@@ -90,21 +93,9 @@ func New() *Uart {
 
 	//Runs in a seperate goroutine and listens for data
 	//Returns the data to the channel
-	uart.Listen()
+	//go uart.Listen()
 
 	return uart
-}
-
-func (u *Uart) Read() (byte, error) {
-	// Read some data from the UART device
-	buffer := make([]byte, 100)
-	n, err := u.port.Read(buffer)
-	if err != nil {
-		log.Println(err)
-		return 0, err
-	}
-	fmt.Printf("Read %d bytes from the UART device: %s\n", n, string(buffer[:n]))
-	return buffer[0], nil
 }
 
 //Function that awaits the connect response based on ID
@@ -112,30 +103,44 @@ func (u *Uart) Read() (byte, error) {
 func (u *Uart) Write(b []byte) error {
 	// Write some data to the UART device
 
+	//append \x00 to the end of the byte array
+	b = append(b, '\x00')
+	fmt.Println("Writing", string(b))
+
 	n, err := u.port.Write(b)
 	if err != nil {
 		log.Println(err)
 		return err
 	}
-	fmt.Printf("Wrote %d bytes to the UART device.\n", n)
+	fmt.Printf("Wrote %d bytes to the UART device.\r\n", n)
 	return nil
+}
+
+func (u *Uart) Read() ([]byte, error) {
+	result, err := bufio.NewReader(u.port).ReadBytes('\x00')
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	fmt.Println("Read", string(result))
+
+	return result, nil
 }
 
 // Function that acts as a listerner for the UART should run in a seperate goroutine
 func (u *Uart) Listen() {
 	fmt.Println("Listening for data..")
 	//Create go routine that listens for data
-	go func() {
-		for {
-			data, err := u.Read()
-			if err != nil {
-				log.Println(err)
-				continue
-			}
-			log.Println("Data received", data)
-			u.ch <- []byte{data}
+
+	for {
+		data, err := u.Read()
+		if err != nil {
+			log.Println(err)
+			continue
 		}
-	}()
+		u.ch <- data
+	}
+
 }
 
 // method that listens in on the UART channel and looks for an id match with a value within the channel
@@ -144,13 +149,12 @@ func (u *Uart) AwaitResponse(ctx context.Context, id string) (byte, error) {
 	for {
 		select {
 		case data := <-u.ch:
-			fmt.Println("Data received", data)
-			if len(data) < 1 {
-				return 0, errors.New("invalid data received")
+
+			//Check if data contains the correct id
+			if string(data) == id {
+				return data[1], nil
 			}
-			if data[0] == id[0] {
-				return data[0], nil
-			}
+
 		default:
 			return 0, errors.New("no response received")
 		}

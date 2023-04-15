@@ -30,12 +30,12 @@ func (s *server) GetLockState(ctx context.Context, in *connect.Request[lockv1.Ge
 	log.Println("req: ", req)
 
 	// call lock service
-	/* 	res, err := s.lockClient.GetLockState(ctx, req)
-	   	if err != nil {
-	   		log.Println("err: ", err)
-	   		return nil, err
-	   	}
-	   	log.Println("res: ", res) */
+	res, err := s.lockClient.GetLockState(ctx, req)
+	if err != nil {
+		log.Println("err: ", err)
+		return nil, err
+	}
+	log.Println("res: ", res)
 
 	// convert response to connect response
 	resp := &connect.Response[lockv1.GetLockStateResponse]{

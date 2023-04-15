@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/nohns/servers/bridge/domain"
 	"github.com/nohns/servers/bridge/server"
+	"github.com/nohns/servers/bridge/uart"
 	"github.com/nohns/servers/pkg/config"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -48,10 +49,10 @@ func main() {
 	//repo := repository.New()
 
 	//uart layer
-	//uart := uart.New()
+	uart := uart.New()
 
 	//Domain layer
-	domain := domain.New()
+	domain := domain.New(uart)
 
 	//Server layer
 	server.StartGRPCServer(domain)
