@@ -1,21 +1,29 @@
 #pragma once
 
+#include "controller.h"
+
 class Uart
 {
 private:
-    // Target CPU frequency
+    // Constants to make sure its compatible with Go and C++
     static const unsigned long XTAL = 16000000;
+    static const unsigned long baudRate = 9600;
+    static const unsigned char dataBit = 8;
+
+    Controller *controller;
 
     // Both of these functions are for internal use only
-    bool charReady();
+    bool
+    charReady();
     void sendChar(char character);
+    char readChar();
 
 public:
-    Uart(unsigned long baudRate, unsigned char dataBit);
+    Uart(Controller *controller);
 
-    void readString(char *buffer, int bufferLength);
-
-    char readChar();
+    char *readString();
     void sendString(char *string);
-    void sendInteger(int number);
+
+    void awaitRequest();
+    void routeRequest(char *request);
 };
