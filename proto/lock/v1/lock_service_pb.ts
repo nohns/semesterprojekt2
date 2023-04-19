@@ -48,9 +48,9 @@ export class GetLockStateRequest extends Message<GetLockStateRequest> {
  */
 export class GetLockStateResponse extends Message<GetLockStateResponse> {
   /**
-   * @generated from field: bool locked = 1;
+   * @generated from field: bool engaged = 1;
    */
-  locked = false;
+  engaged = false;
 
   constructor(data?: PartialMessage<GetLockStateResponse>) {
     super();
@@ -60,7 +60,7 @@ export class GetLockStateResponse extends Message<GetLockStateResponse> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "lock.v1.GetLockStateResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "locked", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+    { no: 1, name: "engaged", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetLockStateResponse {
@@ -90,9 +90,9 @@ export class SetLockStateRequest extends Message<SetLockStateRequest> {
   id = "";
 
   /**
-   * @generated from field: bool locked = 2;
+   * @generated from field: bool engaged = 2;
    */
-  locked = false;
+  engaged = false;
 
   constructor(data?: PartialMessage<SetLockStateRequest>) {
     super();
@@ -103,7 +103,7 @@ export class SetLockStateRequest extends Message<SetLockStateRequest> {
   static readonly typeName = "lock.v1.SetLockStateRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "locked", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+    { no: 2, name: "engaged", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): SetLockStateRequest {
@@ -128,9 +128,9 @@ export class SetLockStateRequest extends Message<SetLockStateRequest> {
  */
 export class SetLockStateResponse extends Message<SetLockStateResponse> {
   /**
-   * @generated from field: bool locked = 1;
+   * @generated from field: bool engaged = 1;
    */
-  locked = false;
+  engaged = false;
 
   constructor(data?: PartialMessage<SetLockStateResponse>) {
     super();
@@ -140,7 +140,7 @@ export class SetLockStateResponse extends Message<SetLockStateResponse> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "lock.v1.SetLockStateResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "locked", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+    { no: 1, name: "engaged", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): SetLockStateResponse {

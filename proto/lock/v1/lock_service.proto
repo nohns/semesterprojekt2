@@ -14,15 +14,15 @@ string id = 1;
 }
 
 message GetLockStateResponse {
-bool locked = 1;
+bool engaged = 1;
 }
 
 message SetLockStateRequest {
 string id = 1;
-bool locked = 2;
+bool engaged = 2;
 }
 
 message SetLockStateResponse {
-bool locked = 1;
+bool engaged = 1;
 }
 

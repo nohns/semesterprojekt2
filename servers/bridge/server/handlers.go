@@ -41,11 +41,15 @@ func (s *Server) GetLockState(ctx context.Context, req *lockv1.GetLockStateReque
 	}
 
 	//Call buissness logic
-	s.domain.GetLock()
+	state, err := s.domain.GetLock()
+	if err != nil {
+		log.Println("Error getting lock state: ", err)
+		return nil, status.Error(500, "Error getting lock state")
+	}
 
 	//Return response
 	return &lockv1.GetLockStateResponse{
-		Locked: true,
+		Engaged: state,
 	}, nil
 }
 
@@ -58,9 +62,14 @@ func (s *Server) SetLockState(ctx context.Context, req *lockv1.SetLockStateReque
 	}
 
 	//Call buissness logic
+	state, err := s.domain.SetLock()
+	if err != nil {
+		log.Println("Error setting lock state: ", err)
+		return nil, status.Error(500, "Error setting lock state")
+	}
 
 	//Return response
 	return &lockv1.SetLockStateResponse{
-		Locked: true,
+		Engaged: state,
 	}, nil
 }
