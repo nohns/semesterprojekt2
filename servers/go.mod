@@ -25,6 +25,7 @@ require (
 	github.com/muka/go-bluetooth v0.0.0-20220830075246-0746e3a1ea53 // indirect
 	github.com/saltosystems/winrt-go v0.0.0-20230124093143-967a889c6c8f // indirect
 	github.com/sirupsen/logrus v1.9.0 // indirect
+	github.com/stianeikeland/go-rpio/v4 v4.6.0 // indirect
 	github.com/tinygo-org/cbgo v0.0.4 // indirect
 	go.bug.st/serial v1.5.0 // indirect
 	golang.org/x/net v0.8.0 // indirect
@@ -32,4 +33,5 @@ require (
 	golang.org/x/text v0.8.0 // indirect
 	google.golang.org/genproto v0.0.0-20230306155012-7f2fa6fef1f4 // indirect
 	google.golang.org/grpc v1.53.0 // indirect
+	tinygo.org/x/bluetooth v0.6.0 // indirect
 )
