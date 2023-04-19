@@ -10,8 +10,12 @@ int main()
 
   Uart uart(&controller);
 
-  // Start uart evenHandler
-  uart.awaitRequest();
-
+  // Start uart eventHandler
+  while (true)
+  {
+    {
+      uart.awaitRequest();
+    }
+  }
   return 0;
 }

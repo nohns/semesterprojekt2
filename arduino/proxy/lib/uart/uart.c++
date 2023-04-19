@@ -107,15 +107,11 @@ char *Uart::readString()
 
 void Uart::awaitRequest()
 {
-    while (true)
+    char *rx = readString();
+    // Check if something is recieved on *rx
+    if (rx != 0)
     {
-        char *rx = readString();
-
-        // Check if something is recieved on *rx
-        if (rx != 0)
-        {
-            routeRequest(rx);
-        }
+        routeRequest(rx);
     }
 }
 
@@ -132,7 +128,7 @@ void Uart::routeRequest(char *request)
     char *id = strtok(NULL, "/");
     char *state = strtok(NULL, "/");
 
-       if (strcmp(route, "GET") == 0)
+    if (strcmp(route, "GET") == 0)
     {
         // Create new Lock object to hold information
         Lock lock = Lock(id, state);
@@ -142,7 +138,6 @@ void Uart::routeRequest(char *request)
 
         sendString(res);
         free(res);
-        // sendString("GET/123/TRUE");
     }
 
     if (strcmp(route, "SET") == 0)

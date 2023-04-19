@@ -19,8 +19,6 @@ char *Controller::getLock(Lock lock)
     // Temporarily we are just going to return the request string
 
     // Allocate heap memory using new operator
-    // char *idk = new char[10];
-
     int8_t len = snprintf(NULL, 0, "%s/%s", lock.id, lock.state + 1);
     char *str = (char *)malloc(sizeof(char) * (len + 1));
     if (str != NULL)
