@@ -12,7 +12,7 @@ import (
 	pairingv1 "github.com/nohns/proto/pairing/v1"
 )
 
-func NewLockClient() *lockv1.LockServiceClient /* , *grpc.ClientConn */ {
+func NewLockClient() *lockv1.LockServiceClient {
 	conn, err := grpc.DialContext(
 		context.Background(),
 		"dns:///0.0.0.0"+os.Getenv("BRIDGE"),
@@ -25,10 +25,10 @@ func NewLockClient() *lockv1.LockServiceClient /* , *grpc.ClientConn */ {
 	}
 
 	client := lockv1.NewLockServiceClient(conn)
-	return &client //, conn
+	return &client
 }
 
-func NewPairingClient() *pairingv1.PairingServiceClient /* , *grpc.ClientConn */ {
+func NewPairingClient() *pairingv1.PairingServiceClient {
 
 	conn, err := grpc.DialContext(
 		context.Background(),
@@ -41,5 +41,5 @@ func NewPairingClient() *pairingv1.PairingServiceClient /* , *grpc.ClientConn */
 	}
 
 	client := pairingv1.NewPairingServiceClient(conn)
-	return &client //, conn
+	return &client
 }

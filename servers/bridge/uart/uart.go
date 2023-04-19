@@ -6,6 +6,8 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"strings"
+	"sync"
 
 	"go.bug.st/serial"
 )
@@ -72,8 +74,10 @@ const USB = "/dev/tty.usbmodem14501"
 //I feel fairly certain that a race condition is happening here
 
 type Uart struct {
-	port serial.Port
-	ch   chan []byte
+	port  serial.Port
+	ch    chan []byte
+	mappy map[string]string
+	mu    *sync.RWMutex
 }
 
 func New() *Uart {
@@ -88,12 +92,13 @@ func New() *Uart {
 	}
 
 	dataCh := make(chan []byte, 100)
+	mappy := make(map[string]string)
+	mu := &sync.RWMutex{}
 	//Initialize the UART struct
-	uart := &Uart{port: port, ch: dataCh}
-
+	uart := &Uart{port: port, ch: dataCh, mappy: mappy, mu: mu}
 	//Runs in a seperate goroutine and listens for data
 	//Returns the data to the channel
-	//go uart.Listen()
+	go uart.Listen()
 
 	return uart
 }
@@ -103,7 +108,6 @@ func New() *Uart {
 func (u *Uart) Write(b []byte) error {
 	// Write some data to the UART device
 
-	//append \x00 to the end of the byte array
 	b = append(b, '\x00')
 	fmt.Println("Writing", string(b))
 
@@ -138,6 +142,16 @@ func (u *Uart) Listen() {
 			log.Println(err)
 			continue
 		}
+		//Here it might potentially be better to store the request id and the response id in a map
+		//Convert data to string
+		dataString := string(data)
+		//Extract the id from the data
+		//Split by /
+		splitter := strings.Split(dataString, "/")
+		//index 0 is the id
+		//Add the id to the map
+		u.mappy[splitter[1]] = dataString
+
 		u.ch <- data
 	}
 
@@ -148,6 +162,7 @@ func (u *Uart) AwaitResponse(ctx context.Context, id string) (byte, error) {
 	fmt.Println("Awaiting response")
 	for {
 		select {
+
 		case data := <-u.ch:
 
 			//Check if data contains the correct id

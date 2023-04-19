@@ -21,7 +21,7 @@ func readEnvfile() {
 	if err == nil {
 		log.Println("Loaded .env file")
 	}
-	
+
 }
 
 func loadConfFromEnv() (*bridge.Config, error) {
