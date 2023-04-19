@@ -42,9 +42,6 @@ func StartGRPCServer(domain domain) {
 
 	dependencies := newServer(domain)
 
-	//Create tunnel
-	ServeTunnel(s, dependencies)
-
 	//Inject dependencies into the server
 
 	//Register the server

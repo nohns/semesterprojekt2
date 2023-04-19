@@ -1,31 +1,21 @@
 
 #include "uart.h"
-#include "logging.h"
+#include "controller.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 int main()
 {
-  Uart uart(9600, 8);
+  Controller controller;
 
-  // Create an event handler which listens for events on uart.ReadChar()
+  Uart uart(&controller);
 
-  for (;;)
+  // Start uart eventHandler
+  while (true)
   {
-
-    // char rx = uart.readChar();
-
-    char buffer[100];
-    uart.readString(buffer, sizeof(buffer));
-    uart.sendString(buffer);
-
-    if (buffer == "123")
     {
-      uart.sendString("123");
-    }
-    else if (buffer == "b")
-    {
-      uart.sendString("You pressed b");
+      uart.awaitRequest();
     }
   }
-
   return 0;
 }

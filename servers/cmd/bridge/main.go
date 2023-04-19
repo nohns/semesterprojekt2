@@ -1,8 +1,11 @@
 package main
 
 import (
+	"log"
+
 	"github.com/nohns/servers/bridge/domain"
 	"github.com/nohns/servers/bridge/server"
+	"github.com/nohns/servers/bridge/uart"
 	"github.com/nohns/servers/pkg/config"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -35,37 +38,19 @@ func main() {
 	// Create event store
 	//var store eventsource.EventStore = sqlite.NewEventSource(db)
 
-	// Create event bus
-	//evtbus := eventbus.New()
-
-	// Create lock domain service
-	//lockService := bridge.NewLockService(store, evtbus)
-
-	//start rest server
-	//server.StartRESTServer()
-
 	//Repository layer
 	//repo := repository.New()
 
 	//uart layer
-	//uart := uart.New()
+	log.Println("Starting UART")
+	uart := uart.New()
 
 	//Domain layer
-	domain := domain.New()
+	log.Println("Starting Domain")
+	domain := domain.New(uart)
 
 	//Server layer
+	log.Println("Starting Server")
 	server.StartGRPCServer(domain)
 
-	//server.NewTunnelServer()
-
-	// Create command stream
-	/* distributor := cmdstream.NewDistributor(lockService)
-	cs := cmdstream.New(bridgepb.NewCmdServiceClient(conn), distributor)
-
-
-	// Start listening for commands
-	if err := cs.Listen(context.TODO()); err != nil {
-		log.Printf("error streaming commands: %v", err)
-		return
-	} */
 }
