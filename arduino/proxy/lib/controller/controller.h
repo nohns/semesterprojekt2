@@ -1,15 +1,15 @@
 #pragma once
 
-#include "lock.h"
 #include "x10.h"
 
 class Controller
 {
 private:
+    X10 *x10;
+
 public:
     // constructor
-    Controller controller();
+    Controller(X10 *x10);
 
-    char *getLock(Lock lock);
-    char *setLock(Lock lock);
+    char *forwardRequest(char *);
 };
