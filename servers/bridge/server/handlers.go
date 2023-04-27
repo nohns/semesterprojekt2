@@ -12,8 +12,8 @@ import (
 // Take whatever functions the domain needs to use should be injected into this interface
 type domain interface {
 	Register() (string, error)
-	GetLock() (bool, error)
-	SetLock() (bool, error)
+	GetLock(ctx context.Context) (bool, error)
+	SetLock(ctx context.Context, state bool) (bool, error)
 }
 
 func (s *Server) Register(ctx context.Context, req *pairingv1.RegisterRequest) (*pairingv1.RegisterResponse, error) {
@@ -41,7 +41,7 @@ func (s *Server) GetLockState(ctx context.Context, req *lockv1.GetLockStateReque
 	}
 
 	//Call buissness logic
-	state, err := s.domain.GetLock()
+	state, err := s.domain.GetLock(ctx)
 	if err != nil {
 		log.Println("Error getting lock state: ", err)
 		return nil, status.Error(500, "Error getting lock state")
@@ -62,7 +62,7 @@ func (s *Server) SetLockState(ctx context.Context, req *lockv1.SetLockStateReque
 	}
 
 	//Call buissness logic
-	state, err := s.domain.SetLock()
+	state, err := s.domain.SetLock(ctx, req.Engaged)
 	if err != nil {
 		log.Println("Error setting lock state: ", err)
 		return nil, status.Error(500, "Error setting lock state")

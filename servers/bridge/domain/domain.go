@@ -1,17 +1,13 @@
 package domain
 
-import (
-	"context"
-)
+import "context"
 
 type domain struct {
 	uart uart
 }
 
 type uart interface {
-	AwaitResponse(context.Context, string) (byte, error)
-	Write([]byte) error
-	Read() ([]byte, error)
+	AwaitResponse(ctx context.Context, cmd int) ([]byte, error)
 }
 
 func New(uart uart) *domain {

@@ -30,6 +30,7 @@ func newServer(lockClient lockv1.LockServiceClient, pairingClient pairingv1.Pair
 	return &server{lockClient: lockClient, pairingClient: pairingClient}
 }
 
+// Need to implement certificate based authentication
 func Start() {
 
 	log := grpclog.NewLoggerV2(os.Stdout, io.Discard, io.Discard)

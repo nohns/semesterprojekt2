@@ -37,7 +37,7 @@ func StartGRPCServer(domain domain) {
 	}
 
 	s := grpc.NewServer(
-		grpc.UnaryInterceptor(mw.LoggingMiddlewareGrpc),
+		grpc.ChainUnaryInterceptor(mw.Timeout, mw.LoggingMiddlewareGrpc),
 	)
 
 	dependencies := newServer(domain)
