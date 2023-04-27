@@ -28,11 +28,9 @@ func (d domain) GetLock(ctx context.Context) (bool, error) {
 		return false, err
 	}
 
-	log.Println(state)
+	log.Println("Current state is: ", state)
 
-	//here we can recieve locked or unlocked
-
-	return false, nil
+	return state, nil
 }
 
 func (d domain) SetLock(ctx context.Context, state bool) (bool, error) {
@@ -47,7 +45,8 @@ func (d domain) SetLock(ctx context.Context, state bool) (bool, error) {
 			return false, err
 		}
 
-		log.Println(state)
+		log.Println("Current state is: ", state)
+		return state, nil
 	}
 	if !state {
 		res, err := d.uart.AwaitResponse(ctx, closeLock)
@@ -59,10 +58,9 @@ func (d domain) SetLock(ctx context.Context, state bool) (bool, error) {
 			return false, err
 		}
 
-		log.Println(state)
+		log.Println("Current state is: ", state)
+		return state, nil
 	}
-
-	//Here we can recieve a ACK or NACK
 
 	return false, nil
 }
