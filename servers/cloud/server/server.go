@@ -1,11 +1,13 @@
-package cloud
+package server
 
 import (
+	"crypto/tls"
 	"io"
 	"net"
 	"os"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/grpclog"
 
 	"github.com/nohns/servers/pkg/middleware"
@@ -42,7 +44,16 @@ func Start() {
 		log.Fatalln("Failed to listen:", err)
 	}
 
+	
+	tlsConfig := &tls.Config{
+		InsecureSkipVerify: false,
+		Certificates:       []tls.Certificate{},
+		ClientCAs:          nil,
+		ClientAuth:         tls.RequireAndVerifyClientCert,
+	}
+
 	s := grpc.NewServer(
+		grpc.Creds(credentials.NewTLS(tlsConfig)),
 		grpc.UnaryInterceptor(middleware.LoggingMiddlewareGrpc),
 	)
 
@@ -51,7 +62,6 @@ func Start() {
 	pairingClient := NewPairingClient()
 
 	dependencies := newServer(*lockClient, *pairingClient)
-	//Inject dependencies into the server
 
 	//Register the server
 	lockv1.RegisterLockServiceServer(s, dependencies)
