@@ -5,29 +5,25 @@
 int main()
 {
 
-  /*
-      Control control(&motor);
-
-      x10Driver x10(&control);
-
-      UartDriver uart(&control);
-
-      Button button(&control); */
-
+  // Boundary classes
   MotorDriver motor;
 
+  // Controller classes
   Controller controller(&motor);
 
+  // Boundary classes
   Button button(&controller);
 
   Uart uart(&controller);
+
+  // x10Driver x10(&controller)
 
   while (true)
   {
     uart.awaitRequest();
     button.isPressed();
     /* x10.ProcessInput();
-    uart.ProcessInput();
+
     */
   }
 

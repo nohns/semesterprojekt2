@@ -1,9 +1,10 @@
 #pragma once
 
-#include <../.pio/libdeps/megaatmega2560/Servo/src/Servo.h>
+#include <Servo.h>
 
 class MotorDriver
 {
+    // Class defined in the Servo library
     Servo myservo;
     int pos;
 
