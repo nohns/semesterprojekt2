@@ -12,18 +12,6 @@ Uart::Uart(Controller *controller)
 {
     if ((baudRate >= 300) && (baudRate <= 115200) && (dataBit >= 5) && (dataBit <= 8))
     {
-
-        // No interrupts enabled
-        // Receiver enabled
-        // Transmitter enabled
-        // No 9 bit operation
-        // UCSR0B = 0b00011000;
-        // Asynchronous operation, 1 stop bit
-        // Bit 2 and bit 1 controls the number of data bits
-        // UCSR0C = (dataBit - 5) << 1;
-        // Set Baud Rate according to the parameter baudRate
-        // UBRR0 = XTAL / (16 * baudRate) - 1;
-
         UCSR0B = 0b00011000;                // Asynchronous operation, 1 stop bit
         UCSR0C = (dataBit - 5) << 1;        // Bit 2 and bit 1 controls the number of data bits
         UCSR0C &= ~(1 << UPM01);            // Set parity to None
@@ -34,16 +22,6 @@ Uart::Uart(Controller *controller)
         this->controller = controller;
     }
 }
-
-/*  UCSR0B = 0b00011000;
-    // Enable RX interrupt (if required by parameter)
-    if (RX_Int)
-      UCSR0B |= (1<<7);
-    // Asynchronous operation, 1 stop bit
-    // Bit 2 and bit 1 controls the number of data bits
-    UCSR0C = (DataBit-5)<<1;
-    // Set Baud Rate according to the parameter BaudRate
-    UBRR0 = XTAL/(16*BaudRate) - 1; */
 
 // Check if UART has received a new character
 bool Uart::charReady()
@@ -62,7 +40,7 @@ void Uart::sendChar(char character)
     UDR0 = character;
 }
 
-// Send a null-terminated string over UART
+// Used for debugging mainly
 void Uart::sendString(char *string)
 {
     // Repeat until zero-termination
