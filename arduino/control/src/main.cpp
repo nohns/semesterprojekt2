@@ -1,29 +1,34 @@
 #include "controller.h"
 #include "uart.h"
+#include "button.h"
 
 int main()
 {
 
-  /*   MotorDriver motor;
+  /*
+      Control control(&motor);
 
-    Control control(&motor);
+      x10Driver x10(&control);
 
-    x10Driver x10(&control);
+      UartDriver uart(&control);
 
-    UartDriver uart(&control);
+      Button button(&control); */
 
-    Button button(&control); */
+  MotorDriver motor;
 
-  Controller controller;
+  Controller controller(&motor);
+
+  Button button(&controller);
 
   Uart uart(&controller);
 
-  for (;;)
+  while (true)
   {
     uart.awaitRequest();
+    button.isPressed();
     /* x10.ProcessInput();
     uart.ProcessInput();
-    button.ProcessInput(); */
+    */
   }
 
   return 0;

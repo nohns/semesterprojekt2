@@ -128,12 +128,12 @@ void Uart::awaitRequest()
     if (rx != 0)
     {
         // Call controller to route request
-        char *res = this->controller->forwardRequest(rx);
+        // char *res = this->controller->forwardRequest(rx);
 
         // Send response back to bridge
-        sendCommand(res[0]);
+        // sendCommand(res[0]);
 
-        free(res);
+        // free(res);
         free(rx);
     }
 }
