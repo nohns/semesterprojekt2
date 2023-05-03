@@ -8,6 +8,28 @@
 #include <string.h>
 #include <stdio.h>
 
-Controller::Controller()
+Controller::Controller(MotorDriver *motor)
+{
+    this->motor = motor;
+
+    // Create a lock object to contain the state
+    this->lockState = Lock();
+}
+
+void Controller::engageLock()
+{
+}
+
+void Controller::disengageLock()
+{
+}
+
+bool Controller::getState()
+{
+
+    return this->lockState.getIsEngaged();
+}
+
+bool Controller::toggleLock()
 {
 }
