@@ -22,12 +22,13 @@ int main()
 
   Uart uart(&controller);
 
+//
   while (true)
   {
     uart.awaitRequest();
     button.isPressed();
     /* x10.ProcessInput();
-    uart.ProcessInput();
+    
     */
   }
 
