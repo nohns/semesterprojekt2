@@ -17,25 +17,16 @@ int main()
 
   Uart uart();
 
-<<<<<<< HEAD
   Keypad keypad (&controller);
 
 //
-=======
-  // x10Driver x10(&controller)
-
->>>>>>> 07bdea21c318e6fe83c54c54909d1f8c0582500b
   while (true)
   {
     //uart.awaitRequest();
     button.isPressed();
     keypad.readPin();
     /* x10.ProcessInput();
-<<<<<<< HEAD
     
-=======
-
->>>>>>> 07bdea21c318e6fe83c54c54909d1f8c0582500b
     */
   }
 
