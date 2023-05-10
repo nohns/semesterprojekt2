@@ -4,10 +4,6 @@
 
 class MotorDriver
 {
-    // Class defined in the Servo library
-    Servo myservo;
-    int pos;
-
 public:
     // Constructor to create motor object
     MotorDriver();
