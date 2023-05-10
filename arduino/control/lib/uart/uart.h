@@ -1,6 +1,6 @@
 #pragma once
 
-#include "controller.h"
+
 
 class Uart
 {
@@ -11,13 +11,13 @@ private:
     static const unsigned long baudRate = 9600;
     static const unsigned char dataBit = 8;
 
-    Controller *controller;
+
 
     // Both of these functions are for internal use only
     bool charReady();
 
 public:
-    Uart(Controller *controller);
+    Uart();
     void sendChar(char character);
     char readChar();
     void awaitRequest();

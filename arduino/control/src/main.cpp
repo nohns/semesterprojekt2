@@ -1,6 +1,7 @@
 #include "controller.h"
 #include "uart.h"
 #include "button.h"
+#include "keypad.h"
 
 int main()
 {
@@ -20,13 +21,16 @@ int main()
 
   Button button(&controller);
 
-  Uart uart(&controller);
+  Uart uart();
+
+  Keypad keypad (&controller);
 
 //
   while (true)
   {
-    uart.awaitRequest();
+    //uart.awaitRequest();
     button.isPressed();
+    keypad.readPin();
     /* x10.ProcessInput();
     
     */
