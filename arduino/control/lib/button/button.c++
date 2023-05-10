@@ -2,7 +2,7 @@
 
 #include <avr/io.h>
 
-#include "Button.h"
+#include "button.h"
 #include "controller.h"
 
 // Constructor
@@ -17,13 +17,14 @@ Button::Button(Controller *controller)
 
 // Method to check if the hardware button is pressed
 // returns true if button is pressed and false if not
-bool Button::isPressed()
+void Button::isPressed()
 {
 
     if ((PINA & 0b10000000) == 0)
     {
-        return true;
-    };
+        // If we detect an input we should call the controller and request a toggle on the lock
+        controller->toggleLock();
 
-    return false;
+        // TODO: Unsure if we need to do anything else here really depends on our usecase
+    };
 }

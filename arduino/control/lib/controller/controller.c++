@@ -1,12 +1,8 @@
 
 #include "uart.h"
 #include "controller.h"
-// #include "x10.h"
 
 #include <avr/io.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
 
 Controller::Controller(MotorDriver *motor)
 {
@@ -18,10 +14,22 @@ Controller::Controller(MotorDriver *motor)
 
 void Controller::engageLock()
 {
+
+    // Call the motor to engage the lock
+    this->motor->engageLock();
+
+    // Update the state of the lock
+    this->lockState.setIsEngaged(true);
 }
 
 void Controller::disengageLock()
 {
+
+    // Call the motor to disengage the lock
+    this->motor->disengageLock();
+
+    // Update the state of the lock
+    this->lockState.setIsEngaged(false);
 }
 
 bool Controller::getState()
@@ -32,4 +40,23 @@ bool Controller::getState()
 
 bool Controller::toggleLock()
 {
+    // If the lock is engaged, disengage it
+    if (this->lockState.getIsEngaged())
+    {
+        // Call the motor to disengage the lock
+        this->motor->disengageLock();
+
+        // Update the state of the lock
+        this->lockState.setIsEngaged(false);
+    }
+    else
+    {
+        // Call the motor to engage the lock
+        this->motor->engageLock();
+
+        // Update the state of the lock
+        this->lockState.setIsEngaged(true);
+    }
+
+    return this->lockState.getIsEngaged();
 }

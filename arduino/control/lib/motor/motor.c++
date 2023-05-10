@@ -1,17 +1,28 @@
 #include "motor.h"
 
+#include <util/delay.h>
+
 // Constructor to create motor object
 MotorDriver::MotorDriver()
 {
-    // Need to add some more logic in here to initialize the motor
+    // Set up I/O pin for output
+    DDRB = 0xff; // Output pin is set as pin 11
+
+    TCCR1A = 0b11000010;
+    TCCR1B = 0b00011001;
+
+    ICR1 = 39999; // Set ICR1 for 20ms signal period
 }
 
 void MotorDriver::engageLock()
 {
-    // Engage the lock
+    OCR1A = 39999 - 3999;
+    _delay_ms(100);
 }
 
 void MotorDriver::disengageLock()
 {
-    // Disengage the lock
+    OCR1A = 39999 - 1999;
+
+    _delay_ms(100);
 }

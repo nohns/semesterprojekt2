@@ -10,5 +10,5 @@ private:
 
 public:
     Button(Controller *controller);
-    bool isPressed();
+    void isPressed();
 };
