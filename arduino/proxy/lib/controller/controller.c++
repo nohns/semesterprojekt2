@@ -17,6 +17,11 @@ Controller::Controller(X10 *x10)
 char *Controller::forwardRequest(char *cmd)
 {
 
+x10.sendData(cmd)
+
+
+char * res = x10.readData();
+    
     // Call x-10 to send the command
 
     // Return the response from x-10
