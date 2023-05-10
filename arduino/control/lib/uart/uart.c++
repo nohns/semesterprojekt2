@@ -8,7 +8,7 @@
 #define bufferLength 100
 
 // Constructor
-Uart::Uart(Controller *controller)
+Uart::Uart()
 {
     if ((baudRate >= 300) && (baudRate <= 115200) && (dataBit >= 5) && (dataBit <= 8))
     {
@@ -30,10 +30,11 @@ Uart::Uart(Controller *controller)
         UCSR0C &= ~(1 << UPM00);            // Set parity to None
         UBRR0 = XTAL / (16 * baudRate) - 1; // Set Baud Rate according to the parameter baudRate
 
-        // Depency injection
-        this->controller = controller;
+      
     }
 }
+
+
 
 /*  UCSR0B = 0b00011000;
     // Enable RX interrupt (if required by parameter)

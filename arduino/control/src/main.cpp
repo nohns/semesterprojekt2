@@ -1,6 +1,7 @@
 #include "controller.h"
 #include "uart.h"
 #include "button.h"
+#include "keypad.h"
 
 int main()
 {
@@ -14,16 +15,18 @@ int main()
   // Boundary classes
   Button button(&controller);
 
-  Uart uart(&controller);
+  Uart uart();
 
-  // x10Driver x10(&controller)
+  Keypad keypad (&controller);
 
+//
   while (true)
   {
-    uart.awaitRequest();
+    //uart.awaitRequest();
     button.isPressed();
+    keypad.readPin();
     /* x10.ProcessInput();
-
+    
     */
   }
 
