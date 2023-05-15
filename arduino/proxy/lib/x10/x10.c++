@@ -7,8 +7,6 @@ extern volatile bool zerocross;
 extern volatile bool flag;
 extern volatile int bitIndex;
 
-
-
 X10::X10()
 {
     receivedChar_ = 0;
@@ -74,9 +72,9 @@ char X10 ::readData()
 
     } while (bitIndex >= 0);
 
-    bitIndex=4;
+    bitIndex = 4;
 
-    //return receivedChar if startbit is received
+    // return receivedChar if startbit is received
     return (receivedChar_ & (1 << 4) ? receivedChar_ : 0);
 }
 
@@ -118,25 +116,25 @@ void X10 ::sendData(char c)
                 // sets pin 6 of port H to 120kHz
                 // PWM at 120 kHz with DC=50%
                 // Timer 2 PWM fast mode enables and non-inverting mode is set and prescaler 8
-                TCCR2A = 10000011;
-                TCCR2B = 00001010;
+                TCCR2A = 0b10000011;
+                TCCR2B = 0b00001010;
                 // TOP LEVEL set to 128 Timer 2
                 OCR2A = 127;
                 // OCR value is set to 64 for Timer 2
                 OCR2B = 64;
             }
         }
-        flag=false;
+        flag = false;
 
     } while (bitIndex >= 0);
 
-        bitIndex=4;
+    bitIndex = 4;
 }
 
 // Define timer ISR to be executed every 1 ms
 ISR(TIMER1_COMPA_vect)
 {
-    flag=true;
+    flag = true;
     bitIndex--;
     zerocross = false;
     // disable PWM
@@ -148,7 +146,7 @@ ISR(TIMER1_COMPA_vect)
 
 ISR(TIMER2_COMPA_vect)
 {
-    flag=true;
+    flag = true;
     bitIndex--;
     zerocross = false;
     TCCR2B = 0; // disable Timer 2
