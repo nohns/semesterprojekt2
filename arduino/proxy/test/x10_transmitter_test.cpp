@@ -1,6 +1,3 @@
-
-#include "uart.h"
-#include "controller.h"
 #include "x10.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,10 +7,10 @@ volatile bool zerocross;
 volatile bool flag=false;
 volatile int bitIndex=4;
 
-
-int main()
+int main(void)
 {
-//PORTD as input
+
+    //PORTD as input
   DDRC|0x00;
 
 //PORTH as output
@@ -31,17 +28,14 @@ int main()
 
   X10 x10;
 
-  Controller controller(&x10);
-
-  Uart uart(&controller);
-
-  // Start uart eventHandler
-  while (true)
+  while(true)
   {
-    uart.awaitRequest();
+    x10.sendData(0b00001010);
   }
+
   return 0;
 }
+
 
 //zerocross interrupt
  ISR(INT0_vect)
