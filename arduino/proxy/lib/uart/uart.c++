@@ -23,6 +23,18 @@ Uart::Uart(Controller *controller)
     }
 }
 
+Uart::Uart()
+{
+    if ((baudRate >= 300) && (baudRate <= 115200) && (dataBit >= 5) && (dataBit <= 8))
+    {
+        UCSR0B = 0b00011000;                // Asynchronous operation, 1 stop bit
+        UCSR0C = (dataBit - 5) << 1;        // Bit 2 and bit 1 controls the number of data bits
+        UCSR0C &= ~(1 << UPM01);            // Set parity to None
+        UCSR0C &= ~(1 << UPM00);            // Set parity to None
+        UBRR0 = XTAL / (16 * baudRate) - 1; // Set Baud Rate according to the parameter baudRate
+    }
+}
+
 // Check if UART has received a new character
 bool Uart::charReady()
 {

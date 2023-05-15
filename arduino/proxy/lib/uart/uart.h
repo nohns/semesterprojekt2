@@ -18,6 +18,7 @@ private:
 
 public:
     Uart(Controller *controller);
+    Uart();
     void sendChar(char character);
     char readChar();
     void awaitRequest();
