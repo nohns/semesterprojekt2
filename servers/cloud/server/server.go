@@ -10,6 +10,7 @@ import (
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/grpclog"
 
+	"github.com/nohns/servers/pkg/config"
 	"github.com/nohns/servers/pkg/middleware"
 
 	lockv1 "github.com/nohns/proto/lock/v1"
@@ -17,7 +18,8 @@ import (
 	pairingv1 "github.com/nohns/proto/pairing/v1"
 )
 
-//Server responbilbe for communication with the react native phone app
+type Pairing interface {
+}
 
 // This struct should take in
 type server struct {
@@ -26,25 +28,31 @@ type server struct {
 
 	lockClient    lockv1.LockServiceClient
 	pairingClient pairingv1.PairingServiceClient
+	pairing       Pairing
+
+	config *config.Config
 }
 
-func newServer(lockClient lockv1.LockServiceClient, pairingClient pairingv1.PairingServiceClient) *server {
-	return &server{lockClient: lockClient, pairingClient: pairingClient}
+func New(c *config.Config, p Pairing) *server {
+
+	//Open the client connections
+	lockClient := newLockClient(c.BridgeGRPCURI)
+	pairingClient := newPairingClient(c.BridgeGRPCURI)
+
+	return &server{config: c, pairing: p, lockClient: *lockClient, pairingClient: *pairingClient}
 }
 
 // Need to implement certificate based authentication
-func Start() {
+func (s *server) Start(csr []byte) {
 
 	log := grpclog.NewLoggerV2(os.Stdout, io.Discard, io.Discard)
 	grpclog.SetLoggerV2(log)
 
-	addr := os.Getenv("CLOUD")
-	lis, err := net.Listen("tcp", addr)
+	lis, err := net.Listen("tcp", s.config.CloudGRPCURI)
 	if err != nil {
 		log.Fatalln("Failed to listen:", err)
 	}
 
-	
 	tlsConfig := &tls.Config{
 		InsecureSkipVerify: false,
 		Certificates:       []tls.Certificate{},
@@ -52,22 +60,16 @@ func Start() {
 		ClientAuth:         tls.RequireAndVerifyClientCert,
 	}
 
-	s := grpc.NewServer(
+	server := grpc.NewServer(
 		grpc.Creds(credentials.NewTLS(tlsConfig)),
 		grpc.UnaryInterceptor(middleware.LoggingMiddlewareGrpc),
 	)
 
-	//Instantiate the clients
-	lockClient := NewLockClient()
-	pairingClient := NewPairingClient()
-
-	dependencies := newServer(*lockClient, *pairingClient)
-
 	//Register the server
-	lockv1.RegisterLockServiceServer(s, dependencies)
-	pairingv1.RegisterPairingServiceServer(s, dependencies)
+	lockv1.RegisterLockServiceServer(server, s)
+	pairingv1.RegisterPairingServiceServer(server, s)
 
 	// Serve gRPC Server
-	log.Info("Serving gRPC on http://", addr)
-	log.Fatal(s.Serve(lis))
+	log.Info("Serving gRPC on http://", s.config.CloudGRPCURI)
+	log.Fatal(server.Serve(lis))
 }

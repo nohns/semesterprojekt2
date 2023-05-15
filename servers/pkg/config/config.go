@@ -4,12 +4,8 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
-	"strings"
 
 	"github.com/joho/godotenv"
-
-	"github.com/nohns/servers/bridge"
 )
 
 func ReadEnvfile() {
@@ -23,22 +19,33 @@ func ReadEnvfile() {
 	}
 }
 
-func loadConfFromEnv() (*bridge.Config, error) {
+type Config struct {
+	DBPath        string
+	CloudGRPCURI  string
+	BridgeGRPCURI string
+}
+
+func LoadConfFromEnv() (*Config, error) {
 
 	// DB path
-	dbpath, err := stringEnvVar("BRIDGE_DB_PATH")
+	dbpath, err := stringEnvVar("DB_PATH")
 	if err != nil {
 		return nil, fmt.Errorf("could not read BRIDGE_DB_PATH: %v", err)
 	}
 	// gRPC cloud server address
-	grpcuri, err := stringEnvVar("CLOUD_GRPC_URI")
+	cloudUri, err := stringEnvVar("CLOUD_GRPC_URI")
+	if err != nil {
+		return nil, fmt.Errorf("could not read GRPC_ADDR: %v", err)
+	}
+	bridgeUri, err := stringEnvVar("BRIDGE_GRPC_URI")
 	if err != nil {
 		return nil, fmt.Errorf("could not read GRPC_ADDR: %v", err)
 	}
 
-	return &bridge.Config{
-		DBPath:       dbpath,
-		CloudGRPCURI: grpcuri,
+	return &Config{
+		DBPath:        dbpath,
+		CloudGRPCURI:  cloudUri,
+		BridgeGRPCURI: bridgeUri,
 	}, nil
 }
 
@@ -49,25 +56,4 @@ func stringEnvVar(envname string) (string, error) {
 	}
 
 	return val, nil
-}
-
-func intEnvVar(envname string) (int, error) {
-	val, err := strconv.Atoi(os.Getenv(envname))
-	if err != nil {
-		return 0, fmt.Errorf("could not read env var '%s' int value: %v", envname, err)
-	}
-
-	return val, nil
-}
-
-func boolEnvVar(envname string) (bool, error) {
-	val := os.Getenv(envname)
-	if val == "" {
-		return false, fmt.Errorf("missing env var '%s' bool value", envname)
-	}
-	if strings.ToLower(val) == "true" {
-		return true, nil
-	}
-
-	return false, nil
 }
