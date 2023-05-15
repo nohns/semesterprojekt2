@@ -118,8 +118,8 @@ void X10 ::sendData(char c)
                 // sets pin 6 of port H to 120kHz
                 // PWM at 120 kHz with DC=50%
                 // Timer 2 PWM fast mode enables and non-inverting mode is set and prescaler 8
-                TCCR2A | 10000011;
-                TCCR2B | 00001010;
+                TCCR2A = 10000011;
+                TCCR2B = 00001010;
                 // TOP LEVEL set to 128 Timer 2
                 OCR2A = 127;
                 // OCR value is set to 64 for Timer 2
