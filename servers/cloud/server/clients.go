@@ -3,7 +3,6 @@ package server
 import (
 	"context"
 	"log"
-	"os"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -12,10 +11,10 @@ import (
 	pairingv1 "github.com/nohns/proto/pairing/v1"
 )
 
-func NewLockClient() *lockv1.LockServiceClient {
+func newLockClient(addr string) *lockv1.LockServiceClient {
 	conn, err := grpc.DialContext(
 		context.Background(),
-		"dns:///0.0.0.0"+os.Getenv("BRIDGE"),
+		"dns:///0.0.0.0"+addr,
 		grpc.WithBlock(),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
@@ -28,11 +27,11 @@ func NewLockClient() *lockv1.LockServiceClient {
 	return &client
 }
 
-func NewPairingClient() *pairingv1.PairingServiceClient {
+func newPairingClient(addr string) *pairingv1.PairingServiceClient {
 
 	conn, err := grpc.DialContext(
 		context.Background(),
-		"dns:///0.0.0.0"+os.Getenv("BRIDGE"),
+		"dns:///0.0.0.0"+addr,
 		grpc.WithBlock(),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)

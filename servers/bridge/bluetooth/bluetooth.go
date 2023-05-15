@@ -102,7 +102,7 @@ func (p *Peripheral) handleCSR(pemdata []byte) error {
 }
 
 // handleCSRWrite handles the write event of the CSR ble characteristic.
-func (p *Peripheral) handleCSRWrite(client bluetooth.Connection, offset int, value []byte) {
+func (p *Peripheral) handleCSRWrite(client bluetooth.Connection, int, value []byte) {
 	// Get the current CSR buffer for the client connection.
 	b, ok := p.connRecvBuffers[client]
 	if !ok {
