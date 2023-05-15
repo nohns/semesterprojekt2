@@ -33,7 +33,6 @@ func createRootCertificate() ([]byte, []byte, error) {
 	rootCertificateDER, err := x509.CreateCertificate(rand.Reader, &rootTemplate, &rootTemplate, &rootPrivateKey.PublicKey, rootPrivateKey)
 	if err != nil {
 		//format new error
-
 		return nil, nil, fmt.Errorf("failed to create root certificate: %w", err)
 	}
 
@@ -51,7 +50,12 @@ func createRootCertificate() ([]byte, []byte, error) {
 
 }
 
-func signCertificate(rootCertPEM, rootKeyPEM, bridgeCSR, bridgeCSRBlock []byte) ([]byte, error) {
+// This function takes in PEM encoded root certificate and key, and PEM encoded bridge CSR and returns PEM encoded bridge certificate
+func signCertificate() {
+
+}
+
+func signCertificate1(rootCertPEM, rootKeyPEM, bridgeCSR, bridgeCSRBlock []byte) ([]byte, error) {
 
 	rootCertBlock, rest := pem.Decode(rootCertPEM)
 	if len(rest) > 0 {
