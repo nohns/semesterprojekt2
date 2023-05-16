@@ -74,7 +74,7 @@ int main(void)
   // interrupt when rising edge on int0 pin 0
   EICRA = 0b00000011;
 
-  char dataBuffer = 0x00;
+  char dataBuffer = 'm';
 
   X10 x10;
   Uart uart;
@@ -89,6 +89,7 @@ int main(void)
 }
 
 // zerocross interrupt
+
 ISR(INT0_vect)
 {
   zerocross = true;
