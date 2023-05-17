@@ -11,6 +11,7 @@ rpc Register(RegisterRequest) returns (RegisterResponse);
 
 message RegisterRequest {
     bytes csr = 1;
+    bytes public_key = 2;
 }
 
 message RegisterResponse {

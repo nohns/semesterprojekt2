@@ -19,6 +19,7 @@ import (
 )
 
 type Pairing interface {
+	PairCloud(csrPEM []byte) ([]byte, error)
 }
 
 // This struct should take in
@@ -43,7 +44,7 @@ func New(c *config.Config, p Pairing) *server {
 }
 
 // Need to implement certificate based authentication
-func (s *server) Start(csr []byte) {
+func (s *server) Start(rootCertificate *tls.Certificate) {
 
 	log := grpclog.NewLoggerV2(os.Stdout, io.Discard, io.Discard)
 	grpclog.SetLoggerV2(log)
@@ -55,9 +56,10 @@ func (s *server) Start(csr []byte) {
 
 	tlsConfig := &tls.Config{
 		InsecureSkipVerify: false,
-		Certificates:       []tls.Certificate{},
-		ClientCAs:          nil,
-		ClientAuth:         tls.RequireAndVerifyClientCert,
+		Certificates:       []tls.Certificate{*rootCertificate},
+		RootCAs:            nil, //Set to NIL because cloud itself is the root CA
+		//ClientAuth:         tls.RequireAndVerifyClientCert,
+		ClientAuth: tls.RequireAnyClientCert,
 	}
 
 	server := grpc.NewServer(
@@ -73,3 +75,7 @@ func (s *server) Start(csr []byte) {
 	log.Info("Serving gRPC on http://", s.config.CloudGRPCURI)
 	log.Fatal(server.Serve(lis))
 }
+
+//Ok the major issue is the fact that the cloud server has TLS settings on that require a certificate
+//The bridge server does not have a valid certirifacrte
+//I think the solution is to open up a temporary server with lesser TLS settings which should be closed after the pairing is complete

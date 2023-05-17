@@ -6,8 +6,8 @@ import (
 	"log"
 
 	pairingv1 "github.com/nohns/proto/pairing/v1"
-	"github.com/nohns/servers/bridge/certificate"
 	"github.com/nohns/servers/bridge/server"
+	"github.com/nohns/servers/pkg/certificate"
 )
 
 const bridgeID = "123"
@@ -18,85 +18,76 @@ func (d domain) Register() (string, error) {
 
 func (d domain) PairCloud(addr string) (*tls.Certificate, error) {
 	// First we check the database if a root certificate exists
-	cerPEM, pkPEM, err := d.cs.GetCertificate(bridgeID)
+	certPEM, pkPEM, err := d.cs.GetCertificate(bridgeID)
 	if err != nil {
-		// If no root certificate exists, we generate one
-		cer, err := certificate.CreateTLSCert(bridgeID)
+		// If no root certificate exists, we generate a self signed one with limited validity
+		cer, err := certificate.CreateTempTLSCert(bridgeID)
 		if err != nil {
-			//Handle error
 			log.Println("Failed to create certificate", err)
+			return nil, err
 		}
 		//
 		client, conn := server.RunWithTLSAuth(addr, cer)
 
 		//Generate new CSR and send it to the cloud for signing
-		csr, err := certificate.CreateTLSCert(bridgeID)
+		csrTemplatePEM, csrPrivateKeyPEM, err := certificate.CreateCsrRequest()
 		if err != nil {
-			//Handle error
 			log.Println("Failed to create CSR", err)
+			return nil, err
 		}
-		//Encode the CSR to PEM
-		csrPEM, pkPEM, err := certificate.EncodePEM(csr)
+
+		//Extract the public key from the CSR template
+		csrPublicKeyPEM, err := certificate.ExtractPublicKeyPEM(csrPrivateKeyPEM)
 		if err != nil {
-			//Handle error
-			log.Println("Failed to encode CSR to PEM", err)
+			log.Println("Failed to extract public key from CSR template", err)
+			return nil, err
 		}
 
 		//Send CSR to cloud
 		signedCertifacteData, err := client.Register(context.Background(), &pairingv1.RegisterRequest{
-			Csr: csrPEM,
+			Csr:       csrTemplatePEM,
+			PublicKey: csrPublicKeyPEM,
 		})
 		if err != nil {
-			//Handle error
 			log.Println("Failed to send CSR to cloud", err)
+			return nil, err
 		}
+		//THIS IS WHERE THE ERROR IS HAPPENING
 
 		//Split the signed certificate into certificate and id
 		id := signedCertifacteData.BridgeId
 		signedCertificate := signedCertifacteData.Cert
 
-		//Decode PEM encoded certificate
-		cert, pk, err := certificate.DecodePEM(signedCertificate, pkPEM)
-		if err != nil {
-			//Handle error
-			log.Println("Failed to decode PEM", err)
-		}
-
 		//Store certificate in database
-		err = d.cs.InsertCertificate(id, cert.Bytes, pk.Bytes)
+		err = d.cs.InsertCertificate(id, signedCertificate, csrPrivateKeyPEM)
 		if err != nil {
 			//Handle error
 			log.Println("Failed to store certificate in database", err)
+			return nil, err
 		}
 
 		//Close connection
+		log.Println("Closing connection")
 		conn.Close()
 
 		//Create TLS certificate
-		tlsCert, err := certificate.CreateTLSCertFromBytes(cert, pk)
+		tlsCertificate, err := certificate.CreateTLSCertFromPEM(signedCertificate, csrPrivateKeyPEM)
 		if err != nil {
 			//Handle error
 			log.Println("Failed to create TLS certificate", err)
 		}
 
-		return tlsCert, nil
+		return tlsCertificate, nil
 
 	}
-	//Decode PEM encoded certificate and private key
-	cer, pk, err := certificate.DecodePEM(cerPEM, pkPEM)
-	if err != nil {
-		//Handle error
-		log.Println("Failed to decode PEM", err)
-	}
-
 	//Create TLS certificate
-	tlsCert, err := certificate.CreateTLSCertFromBytes(cer, pk)
+	tlsCertificate, err := certificate.CreateTLSCertFromPEM(certPEM, pkPEM)
 	if err != nil {
 		//Handle error
 		log.Println("Failed to create TLS certificate", err)
 	}
 
-	return tlsCert, nil
+	return tlsCertificate, nil
 
 }
 

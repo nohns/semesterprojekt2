@@ -17,18 +17,21 @@ import (
 	mw "github.com/nohns/servers/pkg/middleware"
 )
 
-type Server struct {
-	pairingv1.UnimplementedPairingServiceServer
+// Should probaly revoke the certificate when the user logs out
+
+type server struct {
 	lockv1.UnimplementedLockServiceServer
+	pairingv1.UnimplementedPairingServiceServer
+
 	domain domain
 	config *config.Config
 }
 
-func New(config *config.Config, domain domain) *Server {
-	return &Server{config: config, domain: domain}
+func New(config *config.Config, domain domain) *server {
+	return &server{config: config, domain: domain}
 }
 
-func (s *Server) Start(certificate *tls.Certificate) {
+func (s *server) Start(certificate *tls.Certificate) {
 	// Adds gRPC internal logs. This is quite verbose, so adjust as desired!
 	log := grpclog.NewLoggerV2(os.Stdout, io.Discard, io.Discard)
 	grpclog.SetLoggerV2(log)
