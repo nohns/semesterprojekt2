@@ -55,9 +55,30 @@ int main()
 #include <avr/interrupt.h>
 #include "uart.h"
 
+int main(void)
+{
+
+  // Initiate dependencies
+
+  X10 x10;
+
+  Controller controller(&x10);
+
+  Uart uart(&controller);
+
+  while (true)
+  {
+    // Recieve some input and relay it to the controller
+    uart.awaitRequest();
+  }
+
+  return 0;
+}
 volatile bool zerocross;
 volatile bool flag = false;
 volatile int bitIndex = 4;
+
+/*
 
 int main(void)
 {
@@ -92,4 +113,4 @@ int main(void)
 ISR(INT0_vect)
 {
   zerocross = true;
-}
+} */

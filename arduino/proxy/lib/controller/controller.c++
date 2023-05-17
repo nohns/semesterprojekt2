@@ -14,7 +14,7 @@ Controller::Controller(X10 *x10)
     this->x10 = x10;
 }
 
-char *Controller::forwardRequest(char *cmd)
+char Controller::forwardRequest(char cmd)
 {
 
     // char *res = x10.readData();
@@ -25,16 +25,8 @@ char *Controller::forwardRequest(char *cmd)
 
     // Temporarily we are just going to return the request string
 
-    char locked[] = {0b1101};
-    char unlocked[] = {0b1110};
+    char locked = 0b1101;
+    char unlocked = 0b1100;
 
-    char *str = (char *)malloc(sizeof(char));
-    if (str != NULL)
-    {
-        //  Copy the string to the dynamically allocated memory
-        strcpy(str, unlocked);
-        // Return the dynamically allocated memory
-        return str;
-    }
-    return NULL;
+    return locked;
 }

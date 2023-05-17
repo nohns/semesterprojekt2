@@ -23,6 +23,7 @@ Uart::Uart(Controller *controller)
     }
 }
 
+// Constructor without dependency injection - used for testing
 Uart::Uart()
 {
     if ((baudRate >= 300) && (baudRate <= 115200) && (dataBit >= 5) && (dataBit <= 8))
@@ -53,22 +54,25 @@ void Uart::sendChar(char character)
 }
 
 // Used for debugging mainly
-void Uart::sendString(char *string)
+void Uart::sendString(char *str)
 {
     // Repeat until zero-termination
-    while (*string != 0)
+    while (*str != 0)
     {
         // Send the character pointed to by "string"
-        sendChar(*string);
+        sendChar(*str);
         // Advance the pointer one step
-        string++;
+        str++;
     }
+    // Send null terminating byte to indicate end of string
     sendChar('\x00');
 }
 
 void Uart::sendCommand(char cmd)
 {
+    // The command is contained within a single character
     sendChar(cmd);
+    // Send null terminating byte to indicate end of command
     sendChar('\x00');
 }
 
@@ -84,10 +88,9 @@ char Uart::readChar()
 }
 
 // Remember to free the memory after use
-char *Uart::readString()
+char Uart::readCommand()
 {
     int i = 0;
-
     char buffer[bufferLength];
     while (i < bufferLength - 1)
     {
@@ -98,32 +101,21 @@ char *Uart::readString()
         }
         buffer[i++] = c;
     }
-
-    //  Dynamically allocate memory for the string
-    char *str = (char *)malloc(sizeof(char));
-    if (str != NULL)
-    {
-        //  Copy the string to the dynamically allocated memory
-        strncpy(str, buffer, sizeof(char));
-        return str;
-    }
-
-    return NULL;
+    return buffer[0];
 }
 
 void Uart::awaitRequest()
 {
-    char *rx = readString();
+    char rx = readCommand();
     // Check if something is recieved on *rx
     if (rx != 0)
     {
         // Call controller to route request
-        char *res = this->controller->forwardRequest(rx);
+        char res = this->controller->forwardRequest(rx);
 
         // Send response back to bridge
-        sendCommand(res[0]);
+        sendCommand(res);
 
-        free(res);
-        free(rx);
+        // Release the malloced memory
     }
 }
