@@ -115,7 +115,5 @@ void Uart::awaitRequest()
 
         // Send response back to bridge
         sendCommand(res);
-
-        // Release the malloced memory
     }
 }

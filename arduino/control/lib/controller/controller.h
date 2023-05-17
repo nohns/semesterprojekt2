@@ -12,15 +12,17 @@ private:
 
     MotorDriver *motor;
 
-public:
-    // The constuctor is responsible for initializing the Lock composition
-    Controller(MotorDriver *motor);
-
     void engageLock();
 
     void disengageLock();
 
     bool getState();
+
+public:
+    // The constuctor is responsible for initializing the Lock composition
+    Controller(MotorDriver *motor);
+
+    char routeCommand(char cmd);
 
     bool toggleLock();
 };
