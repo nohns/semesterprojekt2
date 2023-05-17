@@ -12,10 +12,11 @@ import (
 )
 
 func newLockClient(addr string) *lockv1.LockServiceClient {
+	log.Println("Dialing lock service at", addr)
 	conn, err := grpc.DialContext(
 		context.Background(),
 		"dns:///0.0.0.0"+addr,
-		grpc.WithBlock(),
+		/* grpc.WithBlock(), */
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 
@@ -28,11 +29,12 @@ func newLockClient(addr string) *lockv1.LockServiceClient {
 }
 
 func newPairingClient(addr string) *pairingv1.PairingServiceClient {
+	log.Println("Dialing pairing service at", addr)
 
 	conn, err := grpc.DialContext(
 		context.Background(),
 		"dns:///0.0.0.0"+addr,
-		grpc.WithBlock(),
+		/* grpc.WithBlock(), */
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {

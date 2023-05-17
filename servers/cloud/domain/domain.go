@@ -1,6 +1,11 @@
 package domain
 
-import "log"
+import (
+	"crypto/tls"
+	"log"
+
+	"github.com/nohns/servers/pkg/certificate"
+)
 
 const cloudID = "123"
 
@@ -10,53 +15,77 @@ type CertificateStore interface {
 }
 
 type domain struct {
-	certificateStore CertificateStore
+	cs CertificateStore
 }
 
 func New(certificateStore CertificateStore) *domain {
 	return &domain{
-		certificateStore: certificateStore,
+		cs: certificateStore,
 	}
 }
 
-func (d domain) InitializeRootCertificate() {
+// Unexported method used to initialize the root certificate
+func (d domain) InitializeRootCertificate() (*tls.Certificate, error) {
 
-	// Check database if root certificate exists
-	rootcertificate, privKey, err := d.certificateStore.GetCertificate(cloudID)
+	log.Println("Trying to retrieve root certificate from database")
+	rootCertificatePEM, rootPrivateKeyPEM, err := d.cs.GetCertificate(cloudID)
 	if err != nil {
-		//Create root certificate
-		rootcertificate, privKey, err = createRootCertificate()
-		if err != nil {
-			log.Fatalln("Gracefully exiting due to error: ", err)
-		}
-		//Save root certificate to database
-		err = d.certificateStore.InsertCertificate(cloudID, rootcertificate, privKey)
+		log.Println("Failed to retrieve root certificate from database", err)
+		// If no root certificate exists, we generate one
+		rootCertificatePEM, rootPrivateKeyPEM, err = certificate.CreateRootCertificate()
 		if err != nil {
 			//Handle error
-			log.Fatalln("Gracefully exiting due to error: ", err)
+			log.Println("Failed to create certificate", err)
 		}
-	}
-	//Load root certificate from database
-	//Load root certificate from file
-	//Verify root certificate
-	//If root certificate is valid, load it into memory
-	//If root certificate is invalid, delete it from database and file
 
+		//Store certificate in database
+		err = d.cs.InsertCertificate(cloudID, rootCertificatePEM, rootPrivateKeyPEM)
+		if err != nil {
+			//Handle error
+			log.Println("Failed to store certificate in database", err)
+		}
+
+	}
+
+	tlsCert, err := certificate.CreateTLSCertFromPEM(rootCertificatePEM, rootPrivateKeyPEM)
+	if err != nil {
+		log.Println("Failed to create TLS certificate", err)
+		return nil, err
+	}
+
+	return tlsCert, nil
 }
 
-func (d domain) SignCertificate(bridgeCSR, bridgeCSRBlock []byte) ([]byte, error) {
+// Unexported mrthod used to sign a certificate
+func (d domain) signCertificate(csrPEM []byte) ([]byte, error) {
 	//Check database if root certificate exists
-	rootCertPEM, rootKeyPEM, err := d.certificateStore.GetCertificate(cloudID)
+	rootCertificatePEM, rootPrivateKeyPEM, err := d.cs.GetCertificate(cloudID)
 	if err != nil {
-		//Handle error
 		log.Fatalln("Gracefully exiting due to error: ", err)
 	}
 
-	signedCertificate, err := signCertificate(rootCertPEM, rootKeyPEM, bridgeCSR, bridgeCSRBlock)
+	//Extract private key from PEM
+	tlsCertificate, err := tls.X509KeyPair(rootCertificatePEM, rootPrivateKeyPEM)
 	if err != nil {
-		//Handle error
 		log.Fatalln("Gracefully exiting due to error: ", err)
 	}
 
-	return signedCertificate, nil
+	signedCertificatePEM, err := certificate.SignCertificate(rootCertificatePEM, csrPEM, tlsCertificate.PrivateKey)
+	if err != nil {
+		log.Fatalln("Gracefully exiting due to error: ", err)
+	}
+
+	return signedCertificatePEM, nil
+}
+
+// Associated with the register method in the pairing service
+// This method will get hit by the bridge when it wants to pair with the cloud
+func (d domain) PairCloud(csrPEM []byte) ([]byte, error) {
+
+	signedCertificatePEM, err := d.signCertificate(csrPEM)
+	if err != nil {
+		log.Fatalln("Gracefully exiting due to error: ", err)
+	}
+
+	return signedCertificatePEM, nil
 }

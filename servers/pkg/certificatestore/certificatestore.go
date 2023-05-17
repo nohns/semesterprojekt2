@@ -2,7 +2,7 @@ package certificatestore
 
 import (
 	"database/sql"
-	"fmt"
+	"log"
 )
 
 type CertificateStore struct {
@@ -27,21 +27,16 @@ func (cs *CertificateStore) InsertCertificate(id string, certificate []byte, pri
 // TODO
 func (cs *CertificateStore) GetCertificate(id string) ([]byte, []byte, error) {
 	//use the id as a string to look into the certificate table and retrieve the certificate and private key
-
-	result, err := cs.db.Query("SELECT certificate, privatekey FROM certificate WHERE id = ?", id)
-	if err != nil {
-		return nil, nil, fmt.Errorf("failed to select certificate and privatekey based on id: %w", err)
-	}
-	defer result.Close()
+	log.Println("Querying database for certificate and private key")
+	result := cs.db.QueryRow("SELECT certificate, privatekey FROM certificate WHERE id = ?", id)
 	//return the certificate and private key
 	var certificate []byte
 	var privatekey []byte
-	for result.Next() {
-		err := result.Scan(&certificate, &privatekey)
-		if err != nil {
-			return nil, nil, fmt.Errorf("failed to scan certificate and privatekey: %w", err)
-		}
+	var err error
+	if err = result.Scan(&certificate, &privatekey); err == sql.ErrNoRows {
+		return nil, nil, err
 	}
+
 	return certificate, privatekey, nil
 
 }
