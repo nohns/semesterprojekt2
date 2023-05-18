@@ -10,10 +10,11 @@ private:
     static const unsigned char dataBit = 8;
 
     // Both of these functions are for internal use only
-    bool charReady();
 
 public:
     Uart();
+    
+    bool charReady();
     void sendChar(char character);
     char readChar();
 };
