@@ -26,15 +26,18 @@ char X10 ::readData()
    {
 
       // If received bit is 0 on Port C pin 0
-           if ((PINC & (0 << PINC0)) == (0 << PINC0))
+           if ((PINC & (1 << PINC0)) != 0)
            {
-               receivedChar_ |= ~(1 << bitIndex);
+
+            receivedChar_ |= (1 << bitIndex);
+            
            }
            // if received bit != 0
            else
            {
-               receivedChar_ |= (1 << bitIndex);
+               receivedChar_ &= ~(1 << bitIndex);
            }
+           
      bitIndex--;
      zerocross=false;
    }
