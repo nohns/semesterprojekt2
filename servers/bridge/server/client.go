@@ -19,6 +19,7 @@ func RunWithTLSAuth(addr string, tlsCert *tls.Certificate) (pairingv1.PairingSer
 
 	tlsConfig := &tls.Config{
 		Certificates: []tls.Certificate{*tlsCert},
+		RootCAs:      nil,
 	}
 
 	conn, err := grpc.DialContext(ctx, "dns:///0.0.0.0"+addr,
@@ -28,7 +29,7 @@ func RunWithTLSAuth(addr string, tlsCert *tls.Certificate) (pairingv1.PairingSer
 	if err != nil {
 		log.Fatalln("Failed to dial server:", err)
 	}
-	defer conn.Close()
+
 	c := pairingv1.NewPairingServiceClient(conn)
 	log.Println("Connected to pairing service")
 	return c, conn

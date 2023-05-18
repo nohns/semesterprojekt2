@@ -2,6 +2,9 @@ package domain
 
 import (
 	"crypto/tls"
+	"crypto/x509"
+	"encoding/pem"
+	"errors"
 	"log"
 
 	"github.com/nohns/servers/pkg/certificate"
@@ -47,10 +50,20 @@ func (d domain) InitializeRootCertificate() (*tls.Certificate, error) {
 
 	}
 
-	tlsCert, err := certificate.CreateTLSCertFromPEM(rootCertificatePEM, rootPrivateKeyPEM)
+	//convert rootPrivatekeyPEM to rsa.privatekey
+	block, _ := pem.Decode(rootPrivateKeyPEM)
+	if block == nil {
+		return nil, errors.New("failed to decode PEM block")
+	}
+
+	key, err := x509.ParsePKCS1PrivateKey(block.Bytes)
 	if err != nil {
-		log.Println("Failed to create TLS certificate", err)
 		return nil, err
+	}
+
+	tlsCert := &tls.Certificate{
+		Certificate: [][]byte{rootCertificatePEM},
+		PrivateKey:  key,
 	}
 
 	return tlsCert, nil

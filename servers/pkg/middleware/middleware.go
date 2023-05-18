@@ -4,6 +4,8 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"os"
+	"regexp"
 	"time"
 
 	"google.golang.org/grpc"
@@ -33,4 +35,33 @@ func Timeout(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, h
 	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
 	defer cancel()
 	return handler(ctx, req)
+}
+
+// CORS middleware wrapper that allows origins -- configured in ENV
+func Cors(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if allowedOrigin(r.Header.Get("Origin")) {
+			w.Header().Set("Access-Control-Allow-Origin", r.Header.Get("Origin"))
+			w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE")
+			w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization, ResponseType, Origin")
+			w.Header().Set("Access-Control-Allow-Credentials", "true")
+		}
+		if r.Method == "OPTIONS" {
+			return
+		}
+		h.ServeHTTP(w, r)
+
+	})
+}
+
+// Reads ENV file and determines if origin should be * or regex matching
+func allowedOrigin(origin string) bool {
+	if os.Getenv("CORS") == "*" {
+
+		return true
+	}
+	if matched, _ := regexp.MatchString(os.Getenv(("CORS")), origin); matched {
+		return true
+	}
+	return false
 }

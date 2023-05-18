@@ -44,17 +44,17 @@ func main() {
 	domain := domain.New(cerStore)
 
 	//Create self signed root certificate if it doesn't exit
-	rootCertificate, err := domain.InitializeRootCertificate()
+	/* rootCertificate, err := domain.InitializeRootCertificate()
 	if err != nil {
 		log.Fatalln("Error initializing root certificate: ", err)
-	}
+	} */
 
 	log.Println("Constructing server object")
 	server := server.New(conf, domain)
 
 	log.Println("Starting the server")
 	//Instantiate the connect server and the bridge clients
-	server.Start(rootCertificate)
+	server.Start( /* rootCertificate */ )
 
 	//Here we prolly want to await a signing request from the bridge
 }

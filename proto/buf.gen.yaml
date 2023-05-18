@@ -10,10 +10,13 @@ plugins:
     opt:
       - paths=source_relative
       - require_unimplemented_servers=false
+  - name: grpc-gateway
+    out: .
+    opt: paths=source_relative
 
-  - plugin: es
-    out: .
-    opt: target=ts
-  - plugin: connect-es
-    out: .
-    opt: target=ts
+  #- plugin: es
+    #out: .
+    #opt: target=ts
+  #- plugin: connect-es
+    #out: .
+    #opt: target=ts
