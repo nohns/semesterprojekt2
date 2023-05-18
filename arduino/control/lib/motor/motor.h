@@ -1,7 +1,5 @@
 #pragma once
 
-#include <Servo.h>
-
 class MotorDriver
 {
 public:
