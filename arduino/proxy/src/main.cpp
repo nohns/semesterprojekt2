@@ -7,27 +7,21 @@
 #include <avr/interrupt.h>
 
 volatile bool zerocross;
-volatile bool flag=false;
-volatile int bitIndex=4;
+volatile int bitIndex=5;
+
+void initZerocrossInt();
 
 
 int main()
 {
-//PORTD as input
+//PORTC as input
   DDRC|0x00;
 
 //PORTH as output
   DDRH|0xFF;
 
 
-//enable all interrupts
-  sei();
-
-  //zero cross interrupt
-  //external interrupt 0 activated
-  EIMSK|0b00000001; 
-  //interrupt when rising edge on int0 pin 0
-  EICRA|0b00000011; 
+initZerocrossInt();
 
   X10 x10;
 
@@ -38,9 +32,23 @@ int main()
   // Start uart eventHandler
   while (true)
   {
-    uart.awaitRequest();
+
+    x10.sendData(0b00001010);
+    
   }
   return 0;
+}
+
+void initZerocrossInt()
+{
+  //zero cross interrupt
+  //external interrupt 0 activated
+  EIMSK|0b00000001; 
+  //interrupt when rising edge on int0 pin 0
+  EICRA|0b00000011; 
+    //enable all interrupts
+  sei();
+
 }
 
 //zerocross interrupt

@@ -9,7 +9,7 @@ extern volatile int bitIndex;
 
 X10::X10()
 {
-    
+
 }
 
 char X10 ::readData()
@@ -78,14 +78,12 @@ void X10 ::sendData(char c)
       else
       {
 
-  
-
         PORTH |= (1 << PH6); 
         _delay_ms(1);
         PORTH &= ~(1 << PH6);
 
 
-        // Timer ellers når den aldrig længere
+        
         //initPWM();
         bitIndex--;
         zerocross = false;
