@@ -24,7 +24,5 @@ void Button::isPressed()
     {
         // If we detect an input we should call the controller and request a toggle on the lock
         controller->toggleLock();
-
-        // TODO: Unsure if we need to do anything else here really depends on our usecase
     };
 }

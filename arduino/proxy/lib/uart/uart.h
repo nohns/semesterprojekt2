@@ -13,17 +13,19 @@ private:
 
     Controller *controller;
 
-    // Both of these functions are for internal use only
+    // Internal use functions
     bool charReady();
+    void sendChar(char character);
+    char readChar();
 
 public:
     Uart(Controller *controller);
     Uart();
-    void sendChar(char character);
-    char readChar();
-    void awaitRequest();
 
+    void awaitRequest();
     void sendCommand(char cmd);
-    char *readString();
+    char readCommand();
+
+    // Used for testing only
     void sendString(char *string);
 };

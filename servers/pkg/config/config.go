@@ -30,7 +30,7 @@ func LoadConfFromEnv() (*Config, error) {
 	// DB path
 	dbpath, err := stringEnvVar("DB_PATH")
 	if err != nil {
-		return nil, fmt.Errorf("could not read BRIDGE_DB_PATH: %v", err)
+		return nil, fmt.Errorf("could not read DB_PATH: %v", err)
 	}
 	// gRPC cloud server address
 	cloudUri, err := stringEnvVar("CLOUD_GRPC_URI")

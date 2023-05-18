@@ -13,22 +13,16 @@ import (
 )
 
 func RunWithTLSAuth(addr string, tlsCert *tls.Certificate) (pairingv1.PairingServiceClient, *grpc.ClientConn) {
+	log.Println("Dialing pairing service at", addr)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	//instead we pass in the certificate
-	/* tlsCert, err := makeTLSCert(username)
-	if err != nil {
-		log.Fatalln("Failed to create client cert:", err)
-	} */
-
 	tlsConfig := &tls.Config{
 		Certificates: []tls.Certificate{*tlsCert},
-		RootCAs:      nil,
 	}
 
 	conn, err := grpc.DialContext(ctx, "dns:///0.0.0.0"+addr,
-		grpc.WithBlock(),
+
 		grpc.WithTransportCredentials(credentials.NewTLS(tlsConfig)),
 	)
 	if err != nil {
@@ -36,5 +30,6 @@ func RunWithTLSAuth(addr string, tlsCert *tls.Certificate) (pairingv1.PairingSer
 	}
 	defer conn.Close()
 	c := pairingv1.NewPairingServiceClient(conn)
+	log.Println("Connected to pairing service")
 	return c, conn
 }

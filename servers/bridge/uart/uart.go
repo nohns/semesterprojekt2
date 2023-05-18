@@ -31,7 +31,7 @@ func New() *Uart {
 		Parity:   serial.NoParity,
 	})
 	if err != nil {
-		log.Fatal("Failed to open UART connection", err)
+		//log.Fatal("Failed to open UART connection", err)
 	}
 
 	//Initialize the UART struct

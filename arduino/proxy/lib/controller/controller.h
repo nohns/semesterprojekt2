@@ -11,5 +11,5 @@ public:
     // constructor
     Controller(X10 *x10);
 
-    char *forwardRequest(char *);
+    char forwardRequest(char);
 };

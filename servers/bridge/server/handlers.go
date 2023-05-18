@@ -16,7 +16,7 @@ type domain interface {
 	SetLock(ctx context.Context, state bool) (bool, error)
 }
 
-func (s *Server) Register(ctx context.Context, req *pairingv1.RegisterRequest) (*pairingv1.RegisterResponse, error) {
+func (s *server) Register(ctx context.Context, req *pairingv1.RegisterRequest) (*pairingv1.RegisterResponse, error) {
 	//Veryfiy that the certificate is valid
 	if req.Csr == nil {
 		log.Println("CSR is nil")
@@ -32,7 +32,7 @@ func (s *Server) Register(ctx context.Context, req *pairingv1.RegisterRequest) (
 	}, nil
 }
 
-func (s *Server) GetLockState(ctx context.Context, req *lockv1.GetLockStateRequest) (*lockv1.GetLockStateResponse, error) {
+func (s *server) GetLockState(ctx context.Context, req *lockv1.GetLockStateRequest) (*lockv1.GetLockStateResponse, error) {
 	log.Println("GetLock called")
 	//veryify that id is not empty
 	if req.Id == "" {
@@ -53,7 +53,7 @@ func (s *Server) GetLockState(ctx context.Context, req *lockv1.GetLockStateReque
 	}, nil
 }
 
-func (s *Server) SetLockState(ctx context.Context, req *lockv1.SetLockStateRequest) (*lockv1.SetLockStateResponse, error) {
+func (s *server) SetLockState(ctx context.Context, req *lockv1.SetLockStateRequest) (*lockv1.SetLockStateResponse, error) {
 	log.Println("SetLock called")
 	//veryify that id is not empty
 	if req.Id == "" {
