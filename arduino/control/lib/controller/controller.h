@@ -25,4 +25,6 @@ public:
     char routeCommand(char cmd);
 
     bool toggleLock();
+
+    bool verifyPin(int pin);
 };

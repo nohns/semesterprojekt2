@@ -21,6 +21,14 @@ Controller::Controller(MotorDriver *motor)
 
     // Create a lock object to contain the state
     this->lockState = Lock();
+    if (this->lockState.getIsEngaged())
+    {
+        this->motor->engageLock();
+    }
+    else
+    {
+        this->motor->disengageLock();
+    }
 }
 
 char Controller::routeCommand(char cmd)
@@ -100,4 +108,16 @@ bool Controller::toggleLock()
     }
 
     return this->lockState.getIsEngaged();
+}
+
+bool Controller::verifyPin(int pin)
+{
+    bool ok = lockState.verifyPin(pin);
+    if (ok)
+    {
+        toggleLock();
+    }
+
+    // Do a comparison between the input pin and the stored pin
+    return this->lockState.verifyPin(pin);
 }
