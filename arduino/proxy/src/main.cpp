@@ -76,12 +76,12 @@ void initZerocrossInt()
 volatile bool zerocross;
 volatile int bitIndex = 5;
 
-void sendData(char);
+//void sendData(char);
 void initExInterrupt();
-void exInterruptDisable();
-void PWMDisable();
-void initPWM();
-void initTimer1interrupt();
+//void exInterruptDisable();
+//void PWMDisable();
+//void initPWM();
+//void initTimer1interrupt();
 
 int main(void)
 {
@@ -96,18 +96,34 @@ int main(void)
 
   initExInterrupt();
 
-  // X10 x10;
+  X10 x10;
 
   while (true)
   {
 
-    sendData(0b00001010);
+    x10.sendData(0b00001010);
   }
 
   return 0;
 }
 
-void sendData(char c)
+void initExInterrupt()
+{
+  // zero cross INT0 enabled
+  EIMSK |= 0b00000001;
+  // interrupt when rising edge on int0 PD pin 0
+  EICRA |= 0b00000011;
+  // Globalt interrupt enable
+  sei();
+}
+
+// zerocross interrut
+ISR(INT0_vect)
+{
+  zerocross = true;
+}
+
+/* void sendData(char c)
 {
 
   while (bitIndex >= 0)
@@ -203,7 +219,7 @@ ISR(TIMER1_COMPA_vect)
   TIMSK1 = 0;           // Disable compare match interrupt for Timer/Counter1
   OCR2B = 0;            // Reset OCR2B value
   PORTH &= ~(1 << PH6); // Set pin 9 low
-}
+} */
 
 /* #include "x10.h"
 #include <stdio.h>
