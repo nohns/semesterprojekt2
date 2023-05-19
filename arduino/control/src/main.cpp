@@ -2,10 +2,21 @@
 #include "button.h"
 #include "keypad.h"
 #include "motor.h"
-// #include "x10.h"
+#include "x10.h"
+#include <avr/interrupt.h>
+#include <util/delay.h>
+
+volatile bool zerocross;
+volatile int bitIndex = 4;
+
+void intExInterrupt();
 
 int main()
 {
+
+  DDRC = 0x00;
+
+  intExInterrupt();
 
   // Boundary classes
   MotorDriver motor;
@@ -19,15 +30,29 @@ int main()
   Keypad keypad(&controller);
 
   // X10
-  // X10 x10(&controller);
+  X10 x10;
 
   //
   while (true)
   {
-    button.isPressed();
+    char output = x10.readData();
+    controller.routeCommand(output);
     keypad.readPin();
-    // x10.ProcessInput();
+
+    button.isPressed();
   }
 
   return 0;
+}
+
+void intExInterrupt()
+{
+  EIMSK |= 0b00000001;
+  EICRA |= 0b00000011;
+  sei();
+}
+
+ISR(INT0_vect)
+{
+  zerocross = true;
 }
