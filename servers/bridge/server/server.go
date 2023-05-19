@@ -1,13 +1,12 @@
 package server
 
 import (
-	"crypto/tls"
 	"io"
 	"net"
 	"os"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/reflection"
 
@@ -31,7 +30,7 @@ func New(config *config.Config, domain domain) *server {
 	return &server{config: config, domain: domain}
 }
 
-func (s *server) Start(certificate *tls.Certificate) {
+func (s *server) Start( /* certificate *tls.Certificate */ ) {
 	// Adds gRPC internal logs. This is quite verbose, so adjust as desired!
 	log := grpclog.NewLoggerV2(os.Stdout, io.Discard, io.Discard)
 	grpclog.SetLoggerV2(log)
@@ -41,15 +40,16 @@ func (s *server) Start(certificate *tls.Certificate) {
 		log.Fatalln("Failed to listen:", err)
 	}
 
-	tlsConfig := &tls.Config{
+	/* tlsConfig := &tls.Config{
 		InsecureSkipVerify: false,
 		Certificates:       []tls.Certificate{*certificate},
 		ClientCAs:          nil,
 		ClientAuth:         tls.RequireAndVerifyClientCert,
-	}
+	} */
 
 	server := grpc.NewServer(
-		grpc.Creds(credentials.NewTLS(tlsConfig)),
+		//grpc.Creds(credentials.NewTLS(tlsConfig)),
+		grpc.Creds(insecure.NewCredentials()),
 		grpc.ChainUnaryInterceptor(mw.Timeout, mw.LoggingMiddlewareGrpc),
 	)
 

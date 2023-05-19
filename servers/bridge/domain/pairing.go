@@ -43,6 +43,9 @@ func (d domain) PairCloud(addr string) (*tls.Certificate, error) {
 			return nil, err
 		}
 
+		log.Println(string(csrTemplatePEM))
+		log.Println(string(csrPrivateKeyPEM))
+
 		//Send CSR to cloud
 		signedCertifacteData, err := client.Register(context.Background(), &pairingv1.RegisterRequest{
 			Csr:       csrTemplatePEM,

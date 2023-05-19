@@ -10,7 +10,7 @@ import (
 )
 
 func (s *server) GetLockState(ctx context.Context, req *lockv1.GetLockStateRequest) (*lockv1.GetLockStateResponse, error) {
-
+	log.Println("req: ", req)
 	// check for required field
 	if req.Id == "" {
 		return nil, errors.New("id is required")
@@ -31,6 +31,7 @@ func (s *server) GetLockState(ctx context.Context, req *lockv1.GetLockStateReque
 }
 
 func (s *server) SetLockState(ctx context.Context, req *lockv1.SetLockStateRequest) (*lockv1.SetLockStateResponse, error) {
+	log.Println("req: ", req)
 
 	if req.Id == "" {
 		return nil, errors.New("id is required")

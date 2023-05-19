@@ -2,37 +2,67 @@
 #include "uart.h"
 #include "keypad.h"
 #include "math.h"
+#include <Arduino.h>
 
 #define READY_BYTE 0b11001100
 #define Granted_BYTE 0b00011101
 #define Denied_BYTE 0b11001100
 
-Keypad::Keypad(Controller *controller)
+Keypad::Keypad(Controller *controller) : uart()
 {
-    Uart uart;
-    this->uart = &uart;
+    this->controller = controller;
 }
 
-int Keypad::readPin()
+void Keypad::readPin()
 {
-    // Sending ready bits
+
     this->uart->sendChar(READY_BYTE);
 
-    int pin = 0;
-    for (int i = 0; i < 4; i++)
+    // CURSED WORK AROUND for getting the uart to respond in time
+    long counter = 0;
+    while (!this->uart->charReady())
     {
-        // Læs pinchar. Kan være 1-10 hvor 10 betyder at det i'te cifret ikke er givet
-        char digit = this->uart->readChar();
-        if (digit >= 10)
+        if (counter < 50000)
         {
+            counter++;
             continue;
         }
 
-        // pin += 10^i * pinchar
-        pin += pow(10, i) * digit;
+        counter = 0;
+        this->uart->sendChar(READY_BYTE);
     }
 
-    return pin;
+    char digit1 = this->uart->readChar();
+    char digit2 = this->uart->readChar();
+    char digit3 = this->uart->readChar();
+    char digit4 = this->uart->readChar();
+    if (digit1 >= 10 || digit2 >= 10 || digit3 >= 10 || digit4 >= 10)
+    {
+        return;
+    }
+
+    int pin = digit1 + digit2 * 10 + digit3 * 100 + digit4 * 1000;
+
+    Serial.print("pin recv: ");
+    Serial.println(pin);
+
+    // Just send it to make de2 happy
+    if (pin == cachedPin)
+    {
+        return;
+    }
+    cachedPin = pin;
+    Serial.println("pin changed");
+
+    bool ok = this->controller->verifyPin(pin);
+    /*if (ok)
+    {
+        this->writeGranted();
+    }
+    if (!ok)
+    {
+        this->writeDenied();
+    }*/
 }
 
 void Keypad::writeDenied()

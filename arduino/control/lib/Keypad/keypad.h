@@ -6,11 +6,14 @@ class Keypad
 {
 private:
     Controller *controller;
-    Uart * uart;
-public:
-Keypad(Controller *controller );
+    Uart *uart;
 
-    int readPin();
+    int cachedPin;
+
+public:
+    Keypad(Controller *controller);
+
+    void readPin();
     void writeDenied();
     void writeGranted();
 };

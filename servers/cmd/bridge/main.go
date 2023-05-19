@@ -54,17 +54,17 @@ func main() {
 
 	//Check if the bridge is already paired with a cloud
 	//If not establish a temp certificate and handle the root
-
-	certificate, err := domain.PairCloud(conf.CloudGRPCURI)
-	if err != nil {
-		log.Fatalln("Error pairing with cloud exiting gracefully: ", err)
-	}
+	/*
+		certificate, err := domain.PairCloud(conf.CloudGRPCURI)
+		if err != nil {
+			log.Fatalln("Error pairing with cloud exiting gracefully: ", err)
+		} */
 
 	//Server layer
 	server := server.New(conf, domain)
 
 	log.Println("Starting Server")
-	server.Start(certificate)
+	server.Start( /* certificate */ )
 
 	//use the certificate provided to secure the GRPC server connection with https
 

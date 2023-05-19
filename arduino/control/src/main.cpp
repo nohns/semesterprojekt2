@@ -32,6 +32,8 @@ int main()
   // X10
   X10 x10;
 
+  Uart uart;
+
   //
   while (true)
   {
