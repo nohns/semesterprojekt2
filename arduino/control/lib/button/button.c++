@@ -19,7 +19,6 @@ Button::Button(Controller *controller)
 // returns true if button is pressed and false if not
 void Button::isPressed()
 {
-
     if ((PINA & 0b10000000) == 0)
     {
         // If we detect an input we should call the controller and request a toggle on the lock
