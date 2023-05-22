@@ -12,10 +12,3 @@ cd ../ || { echo "Failed to change directory to ../"; exit 1; }
 #create string variabel called pairing
 pairing="./pairing"
 
-#pairing
-echo "Generating protobuf code for $pairing..."
-cd $pairing && buf generate || { echo "Failed to generate protobuf code for $pairing"; exit 1; }
-echo "Changing directory to ../../..."
-cd ../ || { echo "Failed to change directory to ../"; exit 1; }
-
-echo "Done."

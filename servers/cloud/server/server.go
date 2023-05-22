@@ -2,14 +2,17 @@ package server
 
 import (
 	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net"
 	"net/http"
 	"os"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/grpclog"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -17,21 +20,18 @@ import (
 	"github.com/nohns/servers/pkg/middleware"
 
 	lockv1 "github.com/nohns/proto/lock/v1"
-	pairingv1 "github.com/nohns/proto/pairing/v1"
 )
 
 type Pairing interface {
-	PairCloud(csrPEM []byte) ([]byte, error)
+	//PairCloud(csrPEM []byte) ([]byte, error)
 }
 
 // This struct should take in
 type server struct {
 	lockv1.UnimplementedLockServiceServer
-	pairingv1.UnimplementedPairingServiceServer
 
-	lockClient    lockv1.LockServiceClient
-	pairingClient pairingv1.PairingServiceClient
-	pairing       Pairing
+	lockClient lockv1.LockServiceClient
+	pairing    Pairing
 
 	config *config.Config
 }
@@ -40,9 +40,8 @@ func New(c *config.Config, p Pairing) *server {
 
 	//Open the client connections
 	lockClient := newLockClient(c.BridgeGRPCURI)
-	pairingClient := newPairingClient(c.BridgeGRPCURI)
 
-	return &server{config: c, pairing: p, lockClient: *lockClient, pairingClient: *pairingClient}
+	return &server{config: c, pairing: p, lockClient: *lockClient}
 }
 
 // Need to implement certificate based authentication
@@ -56,22 +55,36 @@ func (s *server) Start( /* rootCertificate *tls.Certificate */ ) {
 		log.Fatalln("Failed to listen:", err)
 	}
 
-	/* tlsConfig := &tls.Config{
-		InsecureSkipVerify: true,
-		Certificates:       []tls.Certificate{*rootCertificate},
-		RootCAs:            nil, //Set to NIL because cloud itself is the root CA
-		ClientAuth:         tls.RequireAnyClientCert,
-		ClientCAs:          certPool,
-	} */
+	caPem, err := ioutil.ReadFile("../../../cert/ca-cert.pem")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	certPool := x509.NewCertPool()
+	if !certPool.AppendCertsFromPEM(caPem) {
+		log.Fatal(err)
+	}
+
+	serverCert, err := tls.LoadX509KeyPair("../../../cert/server-cert.pem", "../../../cert/server-key.pem")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	conf := &tls.Config{
+		Certificates: []tls.Certificate{serverCert},
+		ClientAuth:   tls.RequireAndVerifyClientCert,
+		ClientCAs:    certPool,
+	}
+
+	tlsCredentials := credentials.NewTLS(conf)
 
 	server := grpc.NewServer(
-		grpc.Creds(insecure.NewCredentials()),
+		grpc.Creds(tlsCredentials),
 		grpc.UnaryInterceptor(middleware.LoggingMiddlewareGrpc),
 	)
 
 	//Register the server
 	lockv1.RegisterLockServiceServer(server, s)
-	pairingv1.RegisterPairingServiceServer(server, s)
 
 	// Serve gRPC Server
 
@@ -93,13 +106,38 @@ func startGateway() error {
 	log := grpclog.NewLoggerV2WithVerbosity(os.Stdout, io.Discard, io.Discard, 1)
 	grpclog.SetLoggerV2(log)
 
+	caCert, err := ioutil.ReadFile("../../../cert/ca-cert.pem")
+	if err != nil {
+		log.Fatal(caCert)
+	}
+
+	// create cert pool and append ca's cert
+	certPool := x509.NewCertPool()
+	if ok := certPool.AppendCertsFromPEM(caCert); !ok {
+		log.Fatal(err)
+	}
+
+	//read client cert
+	clientCert, err := tls.LoadX509KeyPair("../../../cert/client-cert.pem", "../../../cert/client-key.pem")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// set config of tls credential
+	config := &tls.Config{
+		Certificates: []tls.Certificate{clientCert},
+		RootCAs:      certPool,
+	}
+
+	tlsCredential := credentials.NewTLS(config)
+
 	//The reverse proxy connects to the GRPC server
 	conn, err := grpc.DialContext(
 		context.Background(),
 		/* "dns:///0.0.0.0:8080", */
 		"dns:///0.0.0.0"+os.Getenv("CLOUD_GRPC_URI"),
 		grpc.WithBlock(),
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithTransportCredentials(tlsCredential),
 	)
 	if err != nil {
 		return fmt.Errorf("failed to dial: %v", err)
