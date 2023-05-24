@@ -8,6 +8,11 @@ import (
 	lockv1 "github.com/nohns/proto/lock/v1"
 )
 
+type controller interface {
+	GetLockState(ctx context.Context, req *lockv1.GetLockStateRequest) (*lockv1.GetLockStateResponse, error)
+	SetLockState(ctx context.Context, req *lockv1.SetLockStateRequest) (*lockv1.SetLockStateResponse, error)
+}
+
 func (s *server) GetLockState(ctx context.Context, req *lockv1.GetLockStateRequest) (*lockv1.GetLockStateResponse, error) {
 	log.Println("req: ", req)
 	// check for required field
@@ -17,7 +22,7 @@ func (s *server) GetLockState(ctx context.Context, req *lockv1.GetLockStateReque
 	log.Println("req: ", req)
 
 	// call lock service
-	res, err := s.lockClient.GetLockState(ctx, req)
+	res, err := s.controller.GetLockState(ctx, req)
 	if err != nil {
 		log.Println("err: ", err)
 		return nil, err
@@ -37,7 +42,7 @@ func (s *server) SetLockState(ctx context.Context, req *lockv1.SetLockStateReque
 	}
 
 	// call lock service
-	res, err := s.lockClient.SetLockState(ctx, req)
+	res, err := s.controller.SetLockState(ctx, req)
 	if err != nil {
 		log.Println("err: ", err)
 		return nil, err

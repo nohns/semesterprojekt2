@@ -22,30 +22,23 @@ import (
 	lockv1 "github.com/nohns/proto/lock/v1"
 )
 
-type Pairing interface {
-	//PairCloud(csrPEM []byte) ([]byte, error)
-}
-
 // This struct should take in
 type server struct {
 	lockv1.UnimplementedLockServiceServer
+	controller controller
 
-	lockClient lockv1.LockServiceClient
-	pairing    Pairing
-
-	config *config.Config
+	config config.Config
 }
 
-func New(c *config.Config, p Pairing) *server {
+func New(c config.Config) *server {
 
 	//Open the client connections
-	lockClient := newLockClient(c.BridgeGRPCURI)
 
-	return &server{config: c, pairing: p, lockClient: *lockClient}
+	return &server{config: c}
 }
 
 // Need to implement certificate based authentication
-func (s *server) Start( /* rootCertificate *tls.Certificate */ ) {
+func (s *server) Start() {
 
 	log := grpclog.NewLoggerV2(os.Stdout, io.Discard, io.Discard)
 	grpclog.SetLoggerV2(log)

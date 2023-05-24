@@ -24,14 +24,14 @@ type server struct {
 	lockv1.UnimplementedLockServiceServer
 
 	domain domain
-	config *config.Config
+	config config.Config
 }
 
-func New(config *config.Config, domain domain) *server {
+func New(config config.Config, domain domain) *server {
 	return &server{config: config, domain: domain}
 }
 
-func (s *server) Start( /* certificate *tls.Certificate */ ) {
+func (s *server) Start() {
 	// Adds gRPC internal logs. This is quite verbose, so adjust as desired!
 	log := grpclog.NewLoggerV2(os.Stdout, io.Discard, io.Discard)
 	grpclog.SetLoggerV2(log)

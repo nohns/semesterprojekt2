@@ -2,7 +2,6 @@ package uart
 
 import (
 	"bufio"
-	"context"
 	"fmt"
 	"log"
 	"sync"
@@ -71,7 +70,7 @@ func (u *Uart) Read() ([]byte, error) {
 	return result, nil
 }
 
-func (u *Uart) AwaitResponse(ctx context.Context, cmd int) ([]byte, error) {
+func (u *Uart) AwaitResponse(cmd int) ([]byte, error) {
 	//Lock the mutex to ensure that no other goroutine is writing to the UART device
 	u.mu.Lock()
 	defer u.mu.Unlock()
