@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"context"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/x509"
@@ -16,21 +15,15 @@ const filepath = ""
 
 type domain struct {
 	uart uart
-	cs   certificateStore
 }
 
 type uart interface {
-	AwaitResponse(ctx context.Context, cmd int) ([]byte, error)
+	AwaitResponse(cmd int) ([]byte, error)
 }
 
-type certificateStore interface {
-	InsertCertificate(id string, certificate []byte, privatekey []byte) error
-	GetCertificate(id string) ([]byte, []byte, error)
-}
+func New(uart uart) *domain {
 
-func New(uart uart, cs certificateStore) *domain {
-
-	return &domain{uart: uart, cs: cs}
+	return &domain{uart: uart}
 
 }
 
