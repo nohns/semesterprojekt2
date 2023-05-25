@@ -109,9 +109,11 @@ func PreparePeripheral(signer signer) (*Peripheral, error) {
 
 // BeginHandshake starts the advertisement of the bluetooth peripheral, which makes discoverable to the smartphone app
 func (p *Peripheral) BeginHandshake(ctx context.Context) error {
+	p.mu.Lock()
 	if err := p.adv.Start(); err != nil {
 		return fmt.Errorf("could not start ble advertisement: %v", err)
 	}
+	p.mu.Unlock()
 
 	go func() {
 		<-ctx.Done()
@@ -119,7 +121,7 @@ func (p *Peripheral) BeginHandshake(ctx context.Context) error {
 		p.closeHandshakeListeners()
 	}()
 
-	// Wait for context to cancel from either from timeout or when handshake is done
+	// wait for the handshake to complete
 	p.awaitHandshake()
 
 	return nil
