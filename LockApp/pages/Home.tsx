@@ -21,7 +21,7 @@ function Home({navigation, style}: HomeProps) {
   const handleOnClick = () => {
     setLocked(!locked);
 
-    fetch('http://localhost:8500/lock.v1/setLock', {
+    fetch('http://172.20.10.13:8500/lock.v1/setLock', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -30,7 +30,9 @@ function Home({navigation, style}: HomeProps) {
         id: '123',
         engaged: !locked,
       }),
-    });
+    })
+      .then(() => console.log("It's working"))
+      .catch(() => console.log('It failed'));
   };
 
   const handleNavigate = () => {
