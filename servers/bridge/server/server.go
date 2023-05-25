@@ -1,17 +1,19 @@
 package server
 
 import (
+	"crypto/tls"
+	"crypto/x509"
 	"io"
+	"io/ioutil"
 	"net"
 	"os"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/reflection"
 
 	lockv1 "github.com/nohns/proto/lock/v1"
-	pairingv1 "github.com/nohns/proto/pairing/v1"
 	"github.com/nohns/servers/pkg/config"
 	mw "github.com/nohns/servers/pkg/middleware"
 )
@@ -20,17 +22,16 @@ import (
 
 type server struct {
 	lockv1.UnimplementedLockServiceServer
-	pairingv1.UnimplementedPairingServiceServer
 
 	domain domain
-	config *config.Config
+	config config.Config
 }
 
-func New(config *config.Config, domain domain) *server {
+func New(config config.Config, domain domain) *server {
 	return &server{config: config, domain: domain}
 }
 
-func (s *server) Start( /* certificate *tls.Certificate */ ) {
+func (s *server) Start() {
 	// Adds gRPC internal logs. This is quite verbose, so adjust as desired!
 	log := grpclog.NewLoggerV2(os.Stdout, io.Discard, io.Discard)
 	grpclog.SetLoggerV2(log)
@@ -40,21 +41,36 @@ func (s *server) Start( /* certificate *tls.Certificate */ ) {
 		log.Fatalln("Failed to listen:", err)
 	}
 
-	/* tlsConfig := &tls.Config{
-		InsecureSkipVerify: false,
-		Certificates:       []tls.Certificate{*certificate},
-		ClientCAs:          nil,
-		ClientAuth:         tls.RequireAndVerifyClientCert,
-	} */
+	caPem, err := ioutil.ReadFile("../../../cert/ca-cert.pem")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	certPool := x509.NewCertPool()
+	if !certPool.AppendCertsFromPEM(caPem) {
+		log.Fatal(err)
+	}
+
+	serverCert, err := tls.LoadX509KeyPair("../../../cert/server-cert.pem", "../../../cert/server-key.pem")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	conf := &tls.Config{
+		Certificates: []tls.Certificate{serverCert},
+		ClientAuth:   tls.RequireAndVerifyClientCert,
+		ClientCAs:    certPool,
+	}
+
+	tlsCredentials := credentials.NewTLS(conf)
 
 	server := grpc.NewServer(
-		//grpc.Creds(credentials.NewTLS(tlsConfig)),
-		grpc.Creds(insecure.NewCredentials()),
+		grpc.Creds(tlsCredentials),
+
 		grpc.ChainUnaryInterceptor(mw.Timeout, mw.LoggingMiddlewareGrpc),
 	)
 
 	//Register the server
-	pairingv1.RegisterPairingServiceServer(server, s)
 	lockv1.RegisterLockServiceServer(server, s)
 
 	//Idk why the fuck this is needed
