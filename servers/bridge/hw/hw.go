@@ -4,10 +4,11 @@ import (
 	"github.com/stianeikeland/go-rpio/v4"
 )
 
-const startPairBtnPin rpio.Pin = 5
+const startPairBtnPin rpio.Pin = 21
 
 type hw struct {
-	c hwConsumer
+	prevState rpio.State
+	c         hwConsumer
 }
 
 type hwConsumer interface {
@@ -16,7 +17,8 @@ type hwConsumer interface {
 
 func New(c hwConsumer) *hw {
 	return &hw{
-		c: c,
+		prevState: rpio.High,
+		c:         c,
 	}
 }
 
@@ -24,12 +26,17 @@ func (h *hw) Listen() {
 	rpio.Open()
 	defer rpio.Close()
 
-	rpio.PinMode(startPairBtnPin, rpio.Input)
+	// Set start pair pin to input with pullup
+	startPairBtnPin.Mode(rpio.Input)
+	startPairBtnPin.PullUp()
 
 	for {
 		// Run the start pair handler if start pair button is pressed
-		if rpio.ReadPin(startPairBtnPin) == rpio.Low {
+		state := startPairBtnPin.Read()
+		if state == rpio.Low && h.prevState == rpio.High {
 			h.c.HandlePress()
 		}
+
+		h.prevState = state
 	}
 }
