@@ -9,11 +9,9 @@ private:
     static const unsigned long baudRate = 9600;
     static const unsigned char dataBit = 8;
 
-    // Both of these functions are for internal use only
-
 public:
     Uart();
-    
+
     bool charReady();
     void sendChar(char character);
     char readChar();

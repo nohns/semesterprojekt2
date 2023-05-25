@@ -4,11 +4,13 @@
 
 class Button
 {
-
 private:
-    Controller *controller;
+    Controller *controller_;
+    bool wasPressed_;
 
 public:
     Button(Controller *controller);
-    void isPressed();
+
+    // Check if the button is pressed and toggle the lock if it is
+    void checkPress();
 };

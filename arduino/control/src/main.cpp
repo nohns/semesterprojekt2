@@ -1,60 +1,39 @@
+#include <avr/interrupt.h>
+#include <util/delay.h>
+
 #include "controller.h"
 #include "button.h"
 #include "keypad.h"
 #include "motor.h"
 #include "x10.h"
-#include <avr/interrupt.h>
-#include <util/delay.h>
-
-volatile bool zerocross;
-volatile int bitIndex = 4;
-
-void intExInterrupt();
 
 int main()
 {
-
-  DDRC = 0x00;
-
-  intExInterrupt();
-
   // Boundary classes
   MotorDriver motor;
 
-  // Controller classes
+  // Control classes
   Controller controller(&motor);
 
-  // Boundary classes
-  Button button(&controller);
-
+  // Boundary classes depending on controller
+  Button button(&controller); // Button is the one that toggles the lock from the inside
   Keypad keypad(&controller);
-
-  // X10
   X10 x10;
 
-  Uart uart;
-
-  //
+  // Main loop
   while (true)
   {
-    char output = x10.readData();
-    controller.routeCommand(output);
-    keypad.readPin();
+    char x10Data = x10.readData();
+    if (x10Data != X10::NO_DATA)
+    {
+      // The X.10 data will take the form of a 4-bit command as specified inside the routeCommand() method
+      controller.routeCommand(x10Data);
+    }
 
-    button.isPressed();
+    // Read pin
+    keypad.checkPin();
+    button.checkPress();
   }
 
   return 0;
-}
-
-void intExInterrupt()
-{
-  EIMSK |= 0b00000001;
-  EICRA |= 0b00000011;
-  sei();
-}
-
-ISR(INT0_vect)
-{
-  zerocross = true;
 }

@@ -1,9 +1,10 @@
 #include <avr/io.h>
 #include <stdlib.h>
-#include "uart.h"
-
 #include <string.h>
 #include <stdio.h>
+#include <avr/interrupt.h>
+
+#include "uart.h"
 
 #define bufferLength 100
 

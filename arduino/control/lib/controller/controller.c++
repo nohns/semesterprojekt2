@@ -3,17 +3,18 @@
 #include "controller.h"
 
 #include <avr/io.h>
+#include <Arduino.h>
 
-// request constants
-const char openLockCmd = 0b1011;
-const char closeLockCmd = 0b1010;
-const char lockStateCmd = 0b1000;
+// Request constants
+const char OPEN_LOCK_CMD = 0b1011;
+const char CLOSE_LOCK_CMD = 0b1010;
+const char LOCK_STATE_CMD = 0b1000;
 
 // Response constants
-const char ack = 0b1111;
-const char nack = 0b1100;
-const char locked = 0b1101;
-const char unlocked = 0b1110;
+const char NOOP = 0b0000;     // No operation
+const char ACK = 0b1111;      // Signals command being acknowledged
+const char LOCKED = 0b1101;   // Signals lock engaged
+const char UNLOCKED = 0b1110; // Signals lock disengages
 
 Controller::Controller(MotorDriver *motor)
 {
@@ -21,6 +22,8 @@ Controller::Controller(MotorDriver *motor)
 
     // Create a lock object to contain the state
     this->lockState = Lock();
+
+    // Make sure we synchronize the physical state of the lock, with the domain lock state
     if (this->lockState.getIsEngaged())
     {
         this->motor->engageLock();
@@ -33,32 +36,32 @@ Controller::Controller(MotorDriver *motor)
 
 char Controller::routeCommand(char cmd)
 {
-    // Route the command to the appropriate function
+    // Serial.println("cmd Routing");
+    //  Route the command to the appropriate function
     switch (cmd)
     {
-    case openLockCmd:
+    case OPEN_LOCK_CMD:
         this->engageLock();
-        return ack;
-        break;
-    case closeLockCmd:
+        return ACK;
+
+    case CLOSE_LOCK_CMD:
         this->disengageLock();
-        return ack;
-        break;
-    case lockStateCmd:
+        return ACK;
+
+    case LOCK_STATE_CMD:
         bool state = this->getState();
         if (state)
         {
-            return locked;
+            return LOCKED;
         }
         else
         {
-            return unlocked;
+            return UNLOCKED;
         }
-
-        break;
-    default:
         break;
     }
+
+    return NOOP;
 }
 
 void Controller::engageLock()

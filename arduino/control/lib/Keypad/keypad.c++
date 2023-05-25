@@ -4,23 +4,50 @@
 #include "math.h"
 #include <Arduino.h>
 
-#define READY_BYTE 0b11001100
-#define Granted_BYTE 0b00011101
-#define Denied_BYTE 0b11001100
+const char READY_BYTE = 0b11001100;
+const char GRANTED_BYTE = 0b00011101;
+const char DENIED_BYTE = 0b11001100;
 
-Keypad::Keypad(Controller *controller) : uart()
+Keypad::Keypad(Controller *controller) : uart_()
 {
-    this->controller = controller;
+    this->controller_ = controller;
 }
 
-void Keypad::readPin()
+void Keypad::checkPin()
 {
+    int pin;
+    bool pinOK;
 
-    this->uart->sendChar(READY_BYTE);
+    // Waitfor pin reply from DE2-board
+    this->waitForReply();
 
-    // CURSED WORK AROUND for getting the uart to respond in time
-    long counter = 0;
-    while (!this->uart->charReady())
+    // If pin is the same as the cached pin, then we have already verified it before, and it should not be verified again
+    pin = this->readPin();
+    if (pin == cachedPin_)
+    {
+        return;
+    }
+    cachedPin_ = pin;
+
+    // Verify that the pin given is correct and send the appropriate response
+    pinOK = this->controller_->verifyPin(pin);
+    if (pinOK)
+    {
+        this->uart_->sendChar(GRANTED_BYTE);
+    }
+    else
+    {
+        this->uart_->sendChar(DENIED_BYTE);
+    }
+}
+
+void Keypad::waitForReply()
+{
+    unsigned int counter = 0;
+
+    // Spam the DE2-board with a little time interval with READY_BYTE until we receive a reply
+    this->uart_->sendChar(READY_BYTE);
+    while (!this->uart_->charReady())
     {
         if (counter < 50000)
         {
@@ -29,50 +56,29 @@ void Keypad::readPin()
         }
 
         counter = 0;
-        this->uart->sendChar(READY_BYTE);
+        this->uart_->sendChar(READY_BYTE);
     }
-
-    char digit1 = this->uart->readChar();
-    char digit2 = this->uart->readChar();
-    char digit3 = this->uart->readChar();
-    char digit4 = this->uart->readChar();
-    if (digit1 >= 10 || digit2 >= 10 || digit3 >= 10 || digit4 >= 10)
-    {
-        return;
-    }
-
-    int pin = digit1 + digit2 * 10 + digit3 * 100 + digit4 * 1000;
-
-    Serial.print("pin recv: ");
-    Serial.println(pin);
-
-    // Just send it to make de2 happy
-    if (pin == cachedPin)
-    {
-        return;
-    }
-    cachedPin = pin;
-    Serial.println("pin changed");
-
-    bool ok = this->controller->verifyPin(pin);
-    /*if (ok)
-    {
-        this->writeGranted();
-    }
-    if (!ok)
-    {
-        this->writeDenied();
-    }*/
 }
 
-void Keypad::writeDenied()
+int Keypad::readPin()
 {
+    int pin = 0;
+    int multiplier = 1; // Multiplier for digit. E.g. 1 for digit 1, 10 for digit 2 etc.
 
-    this->uart->sendChar(Denied_BYTE);
-}
+    // Read pin from DE2-board. Least significant digit first
+    for (int i = 0; i < 4; i++)
+    {
 
-void Keypad::writeGranted()
-{
+        // Read digit. If not in range of 0-9, then char is invalid, which means that a non 4-digit pin was entered on the DE2-board
+        char digit = this->uart_->readChar();
+        if (digit >= 10)
+        {
+            return 0;
+        }
 
-    this->uart->sendChar(Granted_BYTE);
+        pin += multiplier * (int)digit; // Add digit to pin
+        multiplier *= 10;               // Increase multiplier for next digit
+    }
+
+    return pin;
 }
