@@ -3,7 +3,9 @@ package main
 import (
 	"log"
 
+	"github.com/nohns/servers/bridge/bluetooth"
 	"github.com/nohns/servers/bridge/domain"
+	"github.com/nohns/servers/bridge/hw"
 	"github.com/nohns/servers/bridge/server"
 
 	"github.com/nohns/servers/bridge/uart"
@@ -20,22 +22,31 @@ func main() {
 	// Read config into struct
 	conf, err := config.LoadConfFromEnv()
 	if err != nil {
-		log.Printf("error loading config: %v", err)
-		return
+		log.Fatalf("error loading config: %v", err)
 	}
 
-	//uart layer
+	// UART layer
 	log.Println("Starting UART")
 	uart := uart.New()
 
-	//Domain layer
+	// Domain layer
 	log.Println("Starting Domain")
 	domain := domain.New(uart)
+
+	// Start hardware layer with bluetooth and button
+	blePeriph, err := bluetooth.PreparePeripheral(domain)
+	if err != nil {
+		log.Fatalf("could not prepare ble peripheral: %v", err)
+	}
+	bh := hw.NewButtonHandler(blePeriph)
+	hw := hw.New(bh)
 
 	//Server layer
 	server := server.New(*conf, domain)
 
+	log.Println("Starting HW button listener")
+	go hw.Listen()
+
 	log.Println("Starting Server")
 	server.Start()
-
 }
