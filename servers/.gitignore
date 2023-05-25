@@ -2,4 +2,4 @@
 /cloud.db
 
 /.env
-/.bin
+/bin
