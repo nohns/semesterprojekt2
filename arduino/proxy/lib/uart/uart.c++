@@ -113,7 +113,12 @@ void Uart::awaitRequest()
         // Call controller to route request
         char res = this->controller->forwardRequest(rx);
 
+
+    //check if response has been received from ctrl
+        if(res!=0)
+        {
         // Send response back to bridge
         sendCommand(res);
+        }
     }
 }

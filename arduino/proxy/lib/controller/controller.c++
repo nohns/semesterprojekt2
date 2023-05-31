@@ -1,11 +1,12 @@
 
 
 #include "controller.h"
-
 #include <avr/io.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <util/delay.h>
+
 
 // Remember to free memory and perform null check
 
@@ -18,10 +19,17 @@ char Controller::forwardRequest(char cmd)
 {
 
     // char res = x10.readData();
-    x10->sendData(cmd);
+    for (size_t i = 0; i < 10; i++)
+    {
+        x10->sendData(cmd);
+        _delay_ms(10);
+    }
 
-    char locked = 0b1101;
-    char unlocked = 0b1100;
+    //return message from controller
+    char ctrlreturn=0x00;
 
-    return locked;
+    ctrlreturn=x10->readData();
+
+    return ctrlreturn;
 }
+
