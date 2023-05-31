@@ -19,7 +19,7 @@ const unlocked = 0b1110
 
 func (d domain) GetLock(ctx context.Context) (bool, error) {
 
-	res, err := d.uart.AwaitResponse(ctx, lockState)
+	res, err := d.uart.AwaitResponse(lockState)
 	if err != nil {
 		return false, err
 	}
@@ -36,7 +36,7 @@ func (d domain) GetLock(ctx context.Context) (bool, error) {
 func (d domain) SetLock(ctx context.Context, state bool) (bool, error) {
 
 	if state {
-		res, err := d.uart.AwaitResponse(ctx, openLock)
+		res, err := d.uart.AwaitResponse(openLock)
 		if err != nil {
 			return false, err
 		}
@@ -49,7 +49,7 @@ func (d domain) SetLock(ctx context.Context, state bool) (bool, error) {
 		return state, nil
 	}
 	if !state {
-		res, err := d.uart.AwaitResponse(ctx, closeLock)
+		res, err := d.uart.AwaitResponse(closeLock)
 		if err != nil {
 			return false, err
 		}
@@ -92,7 +92,7 @@ func (d domain) translator(ctx context.Context, b byte, cmd int, state bool) (bo
 
 	if b == nack {
 		//Retry sending the cmd
-		res, err := d.uart.AwaitResponse(ctx, cmd)
+		res, err := d.uart.AwaitResponse(cmd)
 		if err != nil {
 			return false, err
 		}
@@ -102,7 +102,7 @@ func (d domain) translator(ctx context.Context, b byte, cmd int, state bool) (bo
 	}
 
 	//We didn't recieve any valid command at all so we retry sending the cmd
-	res, err := d.uart.AwaitResponse(ctx, cmd)
+	res, err := d.uart.AwaitResponse(cmd)
 	if err != nil {
 		return false, err
 	}

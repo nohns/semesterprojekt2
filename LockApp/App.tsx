@@ -4,6 +4,8 @@ import {NavigationContainer} from '@react-navigation/native';
 //import {Platform} from 'react-native';
 
 import createNativeStackNavigator from '@react-navigation/native-stack/src/navigators/createNativeStackNavigator';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+
 import Home from './pages/Home';
 //import Pair from './pages/Pair';
 import Onboarding from './pages/onboarding';
@@ -18,6 +20,7 @@ import Welcome from './pages/onboarding/Welcome';
 } */
 
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 function App() {
   const [paired, setPaired] = React.useState(true);
@@ -29,8 +32,21 @@ function App() {
 
   return (
     <NavigationContainer>
-      <Welcome />
-      {/*<Stack.Navigator
+      <Tab.Navigator>
+        <Tab.Screen
+          name="Home"
+          component={Home}
+          initialParams={{styles}}
+          options={{headerShown: false}}
+        />
+        <Tab.Screen
+          name="Opsætning"
+          component={Onboarding}
+          options={{headerShown: false}}
+          initialParams={{styles}}
+        />
+      </Tab.Navigator>
+      {/* <Stack.Navigator
         screenOptions={{headerShown: false}}
         initialRouteName="Home">
         <Stack.Screen

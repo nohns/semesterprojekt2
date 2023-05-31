@@ -2,7 +2,6 @@ package uart
 
 import (
 	"bufio"
-	"context"
 	"fmt"
 	"log"
 	"sync"
@@ -12,6 +11,7 @@ import (
 
 // You need to manually check which port your arduino is connected to
 // Could potentially be automated :TODO:
+// const USB = "/dev/ttyACM0"
 const USB = "/dev/tty.usbmodem14501"
 
 //TODO: All of this code needs to be fixed up
@@ -70,7 +70,7 @@ func (u *Uart) Read() ([]byte, error) {
 	return result, nil
 }
 
-func (u *Uart) AwaitResponse(ctx context.Context, cmd int) ([]byte, error) {
+func (u *Uart) AwaitResponse(cmd int) ([]byte, error) {
 	//Lock the mutex to ensure that no other goroutine is writing to the UART device
 	u.mu.Lock()
 	defer u.mu.Unlock()
@@ -86,11 +86,32 @@ func (u *Uart) AwaitResponse(ctx context.Context, cmd int) ([]byte, error) {
 	}
 
 	//await response
-	res, err := u.Read()
+	/* res, err := u.Read()
 	if err != nil {
 		log.Println(err)
 
 		return nil, err
+	}  */
+
+	res := []byte{}
+
+	if cmd == openLock {
+		res = []byte{unlocked}
 	}
+	if cmd == closeLock {
+		res = []byte{locked}
+	}
+
 	return res, nil
 }
+
+// request constants
+const openLock = 0b1011
+const closeLock = 0b1010
+const lockState = 0b1000
+
+// Response constants
+const ack = 0b1111
+const nack = 0b1100
+const locked = 0b1101
+const unlocked = 0b1110

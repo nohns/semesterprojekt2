@@ -1,50 +1,42 @@
 package hw
 
 import (
-	"sync"
-
 	"github.com/stianeikeland/go-rpio/v4"
 )
 
-const startPairBtnPin rpio.Pin = 5
-
-var defaultHW = &hw{}
+const startPairBtnPin rpio.Pin = 21
 
 type hw struct {
-	startPairHandler func()
-	mu               sync.Mutex
+	prevState rpio.State
+	c         hwConsumer
 }
 
-func (h *hw) listen() {
+type hwConsumer interface {
+	HandlePress()
+}
+
+func New(c hwConsumer) *hw {
+	return &hw{
+		prevState: rpio.High,
+		c:         c,
+	}
+}
+
+func (h *hw) Listen() {
 	rpio.Open()
 	defer rpio.Close()
 
-	rpio.PinMode(startPairBtnPin, rpio.Input)
+	// Set start pair pin to input with pullup
+	startPairBtnPin.Mode(rpio.Input)
+	startPairBtnPin.PullUp()
 
 	for {
 		// Run the start pair handler if start pair button is pressed
-		h.mu.Lock()
-		if rpio.ReadPin(startPairBtnPin) == rpio.Low && h.startPairHandler != nil {
-			h.startPairHandler()
+		state := startPairBtnPin.Read()
+		if state == rpio.Low && h.prevState == rpio.High {
+			h.c.HandlePress()
 		}
-		h.mu.Unlock()
+
+		h.prevState = state
 	}
-
-}
-
-func (hw *hw) handlePairStartPress(h func()) {
-	hw.mu.Lock()
-	defer hw.mu.Unlock()
-
-	hw.startPairHandler = h
-}
-
-// Listen for hardware changes, like pair button presses
-func Listen() {
-	defaultHW.listen()
-}
-
-// HandlePairStartPress registers a handler for when the pair button is pressed
-func HandlePairStartPress(h func()) {
-	defaultHW.handlePairStartPress(h)
 }

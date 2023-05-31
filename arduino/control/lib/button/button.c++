@@ -5,24 +5,28 @@
 #include "button.h"
 #include "controller.h"
 
-// Constructor
 Button::Button(Controller *controller)
 {
-    // Dependency inject the controller
-    this->controller = controller;
+    this->controller_ = controller;
+    this->wasPressed_ = false;
 
-    // set pin 7 to input
-    DDRA = 0;
+    // Set pin 7 to input with pull-up
+    DDRA &= ~(1 << PINA7);
+    PORTA |= (1 << PINA7);
 }
 
-// Method to check if the hardware button is pressed
-// returns true if button is pressed and false if not
-void Button::isPressed()
+void Button::checkPress()
 {
-
-    if ((PINA & 0b10000000) == 0)
+    // If pressed now is different from pressed last time, then we have a new button press
+    bool isPressedNow = (PINA & (1 << PINA7)) == 0;
+    if (isPressedNow != wasPressed_)
     {
-        // If we detect an input we should call the controller and request a toggle on the lock
-        controller->toggleLock();
-    };
+        // Only toggle when button just got pressed (falling edge, as button is active low)
+        if (isPressedNow)
+        {
+            this->controller_->toggleLock();
+        }
+    }
+
+    wasPressed_ = isPressedNow;
 }

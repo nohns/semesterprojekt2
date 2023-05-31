@@ -2,11 +2,23 @@ syntax = "proto3";
 
 package lock.v1;
 
+import "google/api/annotations.proto";
+
 option go_package = "github.com/nohns/proto/lock/v1;lockv1";
 
 service LockService {
-rpc GetLockState(GetLockStateRequest) returns (GetLockStateResponse) {}
-rpc SetLockState(SetLockStateRequest) returns (SetLockStateResponse) {}
+rpc GetLockState(GetLockStateRequest) returns (GetLockStateResponse) {
+    option (google.api.http) = {
+        post: "/lock.v1/getLock"
+        body: "*"
+    };
+}
+rpc SetLockState(SetLockStateRequest) returns (SetLockStateResponse) {
+    option (google.api.http) = {
+        post: "/lock.v1/setLock"
+        body: "*"
+    };
+}
 }
 
 message GetLockStateRequest {

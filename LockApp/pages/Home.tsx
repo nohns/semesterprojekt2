@@ -8,9 +8,7 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import {ChevronLeftIcon} from 'react-native-heroicons/outline';
-import Lock from '../components/Lock';
 import Locked from '../components/Locked';
-import {greet} from '../grpc/client';
 
 interface HomeProps {
   navigation: any;
@@ -21,9 +19,20 @@ function Home({navigation, style}: HomeProps) {
   const [locked, setLocked] = React.useState(true);
 
   const handleOnClick = () => {
-    greet();
     setLocked(!locked);
-    console.log(locked);
+
+    fetch('http://172.20.10.13:8500/lock.v1/setLock', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: '123',
+        engaged: !locked,
+      }),
+    })
+      .then(() => console.log("It's working"))
+      .catch(() => console.log('It failed'));
   };
 
   const handleNavigate = () => {
@@ -63,7 +72,6 @@ function Home({navigation, style}: HomeProps) {
           ) : (
             <Text style={styles.h2}> {'Tryk for at låse op'}</Text>
           )}
-          {/*  <Lock locked={locked} /> */}
           <Locked locked={locked} />
         </View>
       </TouchableWithoutFeedback>
@@ -76,6 +84,7 @@ const styles = StyleSheet.create({
     flex: 1,
     vh: 100,
     vw: 100,
+    paddingTop: 60,
   },
   tilbage: {
     flexDirection: 'row',
@@ -84,6 +93,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginTop: 60,
     marginLeft: 21,
+    display: 'none',
   },
   circleWrapper: {
     marginLeft: 30,
@@ -132,6 +142,10 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
+    gap: 20,
+  },
+  bigContainer: {
+    flexDirection: 'column',
   },
 });
 
