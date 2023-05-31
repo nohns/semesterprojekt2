@@ -17,13 +17,8 @@ Controller::Controller(X10 *x10)
 char Controller::forwardRequest(char cmd)
 {
 
-    // char *res = x10.readData();
-
-    // Call x-10 to send the command
-
-    // Return the response from x-10
-
-    // Temporarily we are just going to return the request string
+    // char res = x10.readData();
+    x10->sendData(cmd);
 
     char locked = 0b1101;
     char unlocked = 0b1100;

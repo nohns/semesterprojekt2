@@ -3,96 +3,106 @@
 #include <stdlib.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
+#include <Arduino.h>
 
 extern volatile bool zerocross;
-extern volatile int bitIndex;
 
 X10::X10()
 {
-
 }
 
 char X10 ::readData()
 {
-   while(bitIndex>=0)
- {
 
-   while (zerocross == false)
-       {
-           // do nothing
-       }
+    receivedChar_ = 0;
+    bitIndex_ = 4;
 
-   while(zerocross)
-   {
+    while (bitIndex_ >= 0)
+    {
 
-      // If received bit is 0 on Port C pin 0
-           if ((PINC & (1 << PINC0)) != 0)
-           {
+        while (zerocross == false)
+        {
+            // do nothing
+        }
 
-            receivedChar_ |= (1 << bitIndex);
-            
-           }
-           // if received bit != 0
-           else
-           {
-               receivedChar_ &= ~(1 << bitIndex);
-           }
-           
-     bitIndex--;
-     zerocross=false;
-   }
+        // If received bit is 1 on Port C pin 0
+        if ((PINC & (1 << PINC0)) != 0)
+        {
+            receivedChar_ |= (1 << bitIndex_);
+        }
+        // if received bit = 0
+        else
+        {
+            receivedChar_ &= ~(1 << bitIndex_);
+        }
 
- }
-  bitIndex=5;
+        bitIndex_--;
+        zerocross = false;
+    }
 
-  return receivedChar_;
+    return receivedChar_;
 }
 
 void X10 ::sendData(char c)
 {
-    while (bitIndex >= 0)
-  {
-    while (zerocross == false)
+
+    c |= (1 << 4);
+    bitIndex_ = 4;
+    //Serial.println("send data");
+
+    while (bitIndex_ >= 0)
     {
-      // do nothing
+
+        while (zerocross == false)
+        {
+            // do nothing
+        }
+        //Serial.println("zero cross!");
+
+        if ((c & (1 << bitIndex_)) == 0)
+        {
+            // set pin 6 of port H low
+            PORTH &= ~(1 << PH6);
+            _delay_ms(1);
+            //Serial.println("low");
+        }
+        else
+        {
+            // send PWM 120kHz with 50% dc
+            // initPWM();
+            PORTH |= (1 << PH6);
+            //_delay_us(50); //?
+            _delay_ms(1);
+            PORTH &= ~(1 << PH6);
+            //Serial.println("high");
+        }
+
+        bitIndex_--;
+        zerocross = false;
     }
 
-    while (zerocross)
-    {
-      // Startbit tjek
-      if ((c & (1 << 4)))
-      {
-        // do nothing
-      }
+    //Serial.println("-------------------");
+}
 
-      else
-      { // set startbit to one
-        c |= (1 << 4);
-      }
+void PWMDisable()
+{
 
-      if (((c & (1 << bitIndex)) == 0))
-      {
-        // set pin 6 of port H low
-        PORTH &= ~(1 << PH6);
-        _delay_ms(1);
-        bitIndex--;
-        zerocross = false;
-      }
-      else
-      {
+    OCR2A = 65000;
+    OCR2B = 0;
+    _delay_us(100);         // wait for OCR2A/B to change before stopping timer int
+    TCCR2B &= ~(1 << CS20); // stop timer interrupt
+}
 
-        PORTH |= (1 << PH6); 
-        _delay_ms(1);
-        PORTH &= ~(1 << PH6);
+void initPWM()
+{
+    TCCR2A = (1 << WGM21) | (1 << WGM20); // fast PWM
+    TCCR2B = (1 << WGM22);                // fast PWM
+    TCCR2A |= (1 << COM2B1);              // clear OC2B on Compare match
+    OCR2A = 132;                          // TOP
+    OCR2B = OCR2A / 2;                    // match value (50% dc)
+    TCCR2B |= (1 << CS20);                // Start Timer/Counter2 with no prescaling
 
+    _delay_ms(1);
 
-        
-        //initPWM();
-        bitIndex--;
-        zerocross = false;
-      }
-    }
-  }
-
-  bitIndex = 5;
+    PWMDisable();
 }
