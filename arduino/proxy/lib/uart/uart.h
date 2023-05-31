@@ -18,14 +18,11 @@ private:
     void sendChar(char character);
     char readChar();
 
-public:
-    Uart(Controller *controller);
-    Uart();
-
-    void awaitRequest();
     void sendCommand(char cmd);
     char readCommand();
 
-    // Used for testing only
-    void sendString(char *string);
+public:
+    Uart(Controller *controller);
+
+    void awaitRequest();
 };
