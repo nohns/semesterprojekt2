@@ -23,19 +23,6 @@ Uart::Uart(Controller *controller)
     }
 }
 
-// Constructor without dependency injection - used for testing
-Uart::Uart()
-{
-    if ((baudRate >= 300) && (baudRate <= 115200) && (dataBit >= 5) && (dataBit <= 8))
-    {
-        UCSR0B = 0b00011000;                // Asynchronous operation, 1 stop bit
-        UCSR0C = (dataBit - 5) << 1;        // Bit 2 and bit 1 controls the number of data bits
-        UCSR0C &= ~(1 << UPM01);            // Set parity to None
-        UCSR0C &= ~(1 << UPM00);            // Set parity to None
-        UBRR0 = XTAL / (16 * baudRate) - 1; // Set Baud Rate according to the parameter baudRate
-    }
-}
-
 // Check if UART has received a new character
 bool Uart::charReady()
 {
@@ -51,21 +38,6 @@ void Uart::sendChar(char character)
     }
     // Then send the character
     UDR0 = character;
-}
-
-// Used for debugging mainly
-void Uart::sendString(char *str)
-{
-    // Repeat until zero-termination
-    while (*str != 0)
-    {
-        // Send the character pointed to by "string"
-        sendChar(*str);
-        // Advance the pointer one step
-        str++;
-    }
-    // Send null terminating byte to indicate end of string
-    sendChar('\x00');
 }
 
 void Uart::sendCommand(char cmd)
@@ -113,7 +85,12 @@ void Uart::awaitRequest()
         // Call controller to route request
         char res = this->controller->forwardRequest(rx);
 
+
+    //check if response has been received from ctrl
+        if(res!=0)
+        {
         // Send response back to bridge
         sendCommand(res);
+        }
     }
 }

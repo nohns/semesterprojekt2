@@ -23,3 +23,5 @@ void MotorDriver::disengageLock()
 {
     OCR1A = OCR_UNLOCKED;
 }
+
+//https://extremeelectronics.co.in/avr-tutorials/servo-motor-control-by-using-avr-atmega32-microcontroller/
