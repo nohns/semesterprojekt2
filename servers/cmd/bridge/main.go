@@ -6,9 +6,9 @@ import (
 	"github.com/nohns/servers/bridge/bluetooth"
 	"github.com/nohns/servers/bridge/domain"
 	"github.com/nohns/servers/bridge/hw"
-	"github.com/nohns/servers/bridge/server"
-
 	"github.com/nohns/servers/bridge/uart"
+	"github.com/nohns/servers/cloud/server"
+
 	"github.com/nohns/servers/pkg/config"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -42,7 +42,7 @@ func main() {
 	hw := hw.New(bh)
 
 	//Server layer
-	server := server.New(*conf, domain)
+	server := server.New(*conf)
 
 	log.Println("Starting HW button listener")
 	go hw.Listen()

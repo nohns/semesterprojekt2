@@ -25,12 +25,13 @@ func NewButtonHandler(handshaker handshakeInitiator) *buttonHandler {
 
 func (h *buttonHandler) HandlePress() {
 	// Create a context with a timeout
-	ctx, cancel := context.WithTimeout(context.Background(), handshakeTimeoutDuration)
+	log.Printf("button pressed, starting handshake")
+	/*ctx, cancel := context.WithTimeout(context.Background(), handshakeTimeoutDuration)
 	defer cancel()
 
 	// Start handshake
 	if err := h.handshaker.BeginHandshake(ctx); err != nil {
 		log.Printf("failed to begin handshake: %v", err)
 		return
-	}
+	}*/
 }
