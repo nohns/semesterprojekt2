@@ -3,25 +3,20 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import {
-  GreetRequest,
-  GreetRequest1,
-  GreetResponse,
-  GreetResponse1,
-} from './hello_service_pb.ts';
-import {MethodKind} from '@bufbuild/protobuf';
+import { GreetRequest, GreetRequest1, GreetResponse, GreetResponse1 } from "./hello_service_pb.js";
+import { MethodKind } from "@bufbuild/protobuf";
 
 /**
  * @generated from service hello.v1.GreetService
  */
 export const GreetService = {
-  typeName: 'hello.v1.GreetService',
+  typeName: "hello.v1.GreetService",
   methods: {
     /**
      * @generated from rpc hello.v1.GreetService.Greet
      */
     greet: {
-      name: 'Greet',
+      name: "Greet",
       I: GreetRequest,
       O: GreetResponse,
       kind: MethodKind.Unary,
@@ -30,10 +25,11 @@ export const GreetService = {
      * @generated from rpc hello.v1.GreetService.Greet1
      */
     greet1: {
-      name: 'Greet1',
+      name: "Greet1",
       I: GreetRequest1,
       O: GreetResponse1,
       kind: MethodKind.Unary,
     },
-  },
+  }
 } as const;
+
