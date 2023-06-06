@@ -93,24 +93,18 @@ bool Controller::getState()
 bool Controller::toggleLock()
 {
     // If the lock is engaged, disengage it
-    if (this->lockState.getIsEngaged())
+    if (this->getState()))
     {
         // Call the motor to disengage the lock
-        this->motor->disengageLock();
-
-        // Update the state of the lock
-        this->lockState.setIsEngaged(false);
+        this->disengageLock();
     }
     else
     {
         // Call the motor to engage the lock
-        this->motor->engageLock();
-
-        // Update the state of the lock
-        this->lockState.setIsEngaged(true);
+        this->engageLock();
     }
 
-    return this->lockState.getIsEngaged();
+    return this->getState();
 }
 
 bool Controller::verifyPin(int pin)
