@@ -42,11 +42,11 @@ func main() {
 	hw := hw.New(bh)
 
 	//Server layer
-	server := server.New(*conf)
+	_ = server.New(*conf)
 
 	log.Println("Starting HW button listener")
-	go hw.Listen()
+	hw.Listen()
 
 	log.Println("Starting Server")
-	server.Start()
+	//server.Start()
 }

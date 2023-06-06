@@ -15,7 +15,7 @@ import {
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 const SECONDS_TO_SCAN_FOR = 7;
-const SERVICE_UUIDS: string[] = ['6e400001-b5a3-f393-e0a9-e50e24dcca9e'];
+const SERVICE_UUIDS: string[] = ['9b7155fc-d47e-4309-9c81-a2261d582810'];
 const ALLOW_DUPLICATES = true;
 
 import BleManager, {
@@ -200,7 +200,7 @@ const Bluetooth = () => {
 
   useEffect(() => {
     try {
-      BleManager.start({showAlert: false})
+      BleManager.start({showAlert: true})
         .then(() => console.debug('BleManager started.'))
         .catch(error =>
           console.error('BeManager could not be started.', error),

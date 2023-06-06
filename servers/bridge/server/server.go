@@ -41,7 +41,8 @@ func (s *server) Start() {
 		log.Fatalln("Failed to listen:", err)
 	}
 
-	caPem, err := ioutil.ReadFile("../../../cert/ca-cert.pem")
+	//caPem, err := ioutil.ReadFile("../../../cert/ca-cert.pem")
+	caPem, err := ioutil.ReadFile("cert/ca-cert.pem")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -51,7 +52,8 @@ func (s *server) Start() {
 		log.Fatal(err)
 	}
 
-	serverCert, err := tls.LoadX509KeyPair("../../../cert/server-cert.pem", "../../../cert/server-key.pem")
+	//serverCert, err := tls.LoadX509KeyPair("../../../cert/server-cert.pem", "../../../cert/server-key.pem")
+	serverCert, err := tls.LoadX509KeyPair("cert/server-cert.pem", "cert/server-key.pem")
 	if err != nil {
 		log.Fatal(err)
 	}

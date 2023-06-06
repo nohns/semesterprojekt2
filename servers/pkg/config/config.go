@@ -4,13 +4,22 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/joho/godotenv"
 )
 
 func ReadEnvfile() {
 	//Read the .env file
-	err := godotenv.Load("../../.env")
+	cwdEnvPath, err := filepath.Abs(".env")
+	if err == nil {
+		err = godotenv.Load(cwdEnvPath)
+		if err == nil {
+			log.Println("Loaded .env file")
+			return
+		}
+	}
+	err = godotenv.Load("../../.env")
 	if err != nil {
 		log.Println("Loading .env file failed, using production environment")
 	}

@@ -7,12 +7,13 @@ import (
 	"fmt"
 	"log"
 	"sync"
+	"time"
 
 	"tinygo.org/x/bluetooth"
 )
 
 var (
-	advertisementLocalName    = "Smart Lock"
+	advertisementLocalName    = "Smart Lock Bridge (beta)"
 	serviceUUID               = [16]byte{0x9b, 0x71, 0x55, 0xfc, 0xd4, 0x7e, 0x43, 0x09, 0x9c, 0x81, 0xa2, 0x26, 0x1d, 0x58, 0x28, 0x10} // "9b7155fc-d47e-4309-9c81-a2261d582810"
 	characteristicCSRUUID     = [16]byte{0x9b, 0x71, 0x55, 0xfc, 0xd4, 0x7e, 0x43, 0x09, 0x9c, 0x81, 0xa2, 0x26, 0x1d, 0x58, 0x28, 0x11} // "9b7155fc-d47e-4309-9c81-a2261d582811"
 	characteristicCertUUID    = [16]byte{0x9b, 0x71, 0x55, 0xfc, 0xd4, 0x7e, 0x43, 0x09, 0x9c, 0x81, 0xa2, 0x26, 0x1d, 0x58, 0x28, 0x12} //"9b7155fc-d47e-4309-9c81-a2261d582812"
@@ -103,6 +104,9 @@ func PreparePeripheral(signer signer) (*Peripheral, error) {
 			},
 		},
 	}
+	if err := adapter.AddService(p.svc); err != nil {
+		return nil, fmt.Errorf("failed to add ble service: %v", err)
+	}
 
 	return p, nil
 }
@@ -110,12 +114,15 @@ func PreparePeripheral(signer signer) (*Peripheral, error) {
 // BeginHandshake starts the advertisement of the bluetooth peripheral, which makes discoverable to the smartphone app
 func (p *Peripheral) BeginHandshake(ctx context.Context) error {
 	p.mu.Lock()
+
+	log.Printf("starting ble advertisement")
 	if err := p.adv.Start(); err != nil {
 		return fmt.Errorf("could not start ble advertisement: %v", err)
 	}
 	p.mu.Unlock()
 
 	go func() {
+		log.Printf("waiting for ble handshake context to complete")
 		<-ctx.Done()
 		p.stopAdvertise()
 		p.closeHandshakeListeners()
@@ -134,7 +141,9 @@ func (p *Peripheral) awaitHandshake() {
 	p.handshakeListeners = append(p.handshakeListeners, c)
 	p.mu.Unlock()
 
+	log.Printf("awaiting ble handshake to complete")
 	<-c
+	log.Printf("ble handshake completed")
 }
 
 func (p *Peripheral) closeHandshakeListeners() {
@@ -177,8 +186,11 @@ func (p *Peripheral) performHandshake(pemdata []byte) error {
 // we receive the length of the CSR data that will be sent to us.
 func (p *Peripheral) handleCSRLenWrite(client bluetooth.Connection, _ int, data []byte) {
 	// Initialize receive buffer for the client connection, with the length of the CSR data given as data
+	log.Printf("raw csr len data: %x", data[:2])
+	len := int(binary.BigEndian.Uint16(data[:2]))
+	log.Printf("recv csr len: %v", len)
 	p.connRecvBuffers[client] = &recvBuf{
-		len: int(binary.LittleEndian.Uint16(data[:2])),
+		len: len,
 	}
 }
 
@@ -198,21 +210,39 @@ func (p *Peripheral) handleCSRWrite(client bluetooth.Connection, _ int, value []
 		return
 	}
 
+	log.Printf("received csr data with len = %d: %x", len(value), value)
+
 	// Write the received data to the buffer
 	if _, err := b.Write(value); err != nil {
 		log.Printf("failed to write csr data to buffer: %v", err)
 		return
 	}
 	b.recvLen += len(value)
+
+	log.Printf("now csr has a total len of %d. want %d", b.Len(), b.len)
+
+	// If all data has been received, handle the CSR data
+	if b.recvLen == b.len {
+		defer b.Reset()
+		log.Printf("csr data: %x", b.Bytes())
+		err := p.performHandshake(b.Bytes())
+		if err != nil {
+			log.Printf("failed to perform handshake: %v", err)
+		}
+		return
+	}
 }
 
 // writeCert takes an arbitrary number of bytes in a slice and send them as chucks of 128 bytes to
 // the smartphone app.
 func (p *Peripheral) writeCert(data []byte) error {
-	uintLen := binary.BigEndian.AppendUint16([]byte{}, uint16(len(data)))
+	uintLen := binary.LittleEndian.AppendUint16([]byte{}, uint16(len(data)))
 	if _, err := p.lenCertChar.Write(uintLen); err != nil {
 		return fmt.Errorf("failed to write cert len data: %v", err)
 	}
+
+	// Wait for the smartphone app to be ready to receive the certificate data.
+	time.Sleep(250 * time.Millisecond)
 
 	// Send the data in chunks of 128 bytes.
 	for i := 0; i < len(data); i += 128 {
@@ -224,6 +254,9 @@ func (p *Peripheral) writeCert(data []byte) error {
 		if _, err := p.certChar.Write(data[i:end]); err != nil {
 			return fmt.Errorf("failed to write cert data: %v", err)
 		}
+
+		// Wait for the smartphone app to be ready to receive the next chunk of data.
+		time.Sleep(50 * time.Millisecond)
 	}
 
 	return nil

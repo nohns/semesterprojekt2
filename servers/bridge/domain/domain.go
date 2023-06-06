@@ -4,14 +4,14 @@ import (
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/x509"
+	"crypto/x509/pkix"
 	"encoding/pem"
 	"fmt"
 	"math/big"
 	"os"
+	"path/filepath"
 	"time"
 )
-
-const filepath = ""
 
 type domain struct {
 	uart uart
@@ -28,10 +28,10 @@ func New(uart uart) *domain {
 }
 
 // Called by bluetooth handler returns the certificate
-func (d domain) SignCertificate(csrReq []byte) ([]byte, error) {
+func (d domain) SignCertificate(rawPubKey []byte) ([]byte, error) {
 
 	//convert csr to x509.CertificateRequest
-	block, rest := pem.Decode(csrReq)
+	/*block, rest := pem.Decode(rawPubKey)
 	if rest != nil {
 		return nil, fmt.Errorf("could not decode csr pem data: %v", rest)
 	}
@@ -43,25 +43,37 @@ func (d domain) SignCertificate(csrReq []byte) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("could not parse csr: %v", err)
 
+	}*/
+
+	pubKey, err := x509.ParsePKCS1PublicKey(rawPubKey)
+	if err != nil {
+		return nil, fmt.Errorf("could not parse public key: %v", err)
 	}
 
 	//Load in the intermediate CA's private key and certificate
-	caPrivateKey, err := loadPrivateKeyFromFile(filepath)
+	caPrivKeyPath, err := filepath.Abs("./cert/ca-key.pem")
+	if err != nil {
+		return nil, fmt.Errorf("could not get absolute path to ca private key: %v", err)
+	}
+	caPrivateKey, err := loadPrivateKeyFromFile(caPrivKeyPath)
 	if err != nil {
 		return nil, fmt.Errorf("could not load ca private key: %v", err)
 	}
 
-	caCert, err := loadCertificateFromFile(filepath)
+	caPath, err := filepath.Abs("./cert/ca-cert.pem")
+	if err != nil {
+		return nil, fmt.Errorf("could not get absolute path to ca certificate: %v", err)
+	}
+	caCert, err := loadCertificateFromFile(caPath)
 	if err != nil {
 		return nil, fmt.Errorf("could not load ca certificate: %v", err)
 	}
 
 	// Create a new certificate template
 	template := &x509.Certificate{
-		Subject:               csr.Subject,
-		PublicKeyAlgorithm:    csr.PublicKeyAlgorithm,
-		PublicKey:             csr.PublicKey,
-		SignatureAlgorithm:    csr.SignatureAlgorithm,
+		Subject:               pkix.Name{CommonName: "PHONE-CERT"},
+		PublicKeyAlgorithm:    x509.RSA,
+		SignatureAlgorithm:    x509.UnknownSignatureAlgorithm,
 		NotBefore:             time.Now(),
 		NotAfter:              time.Now().AddDate(1, 0, 0), // Valid for 1 year
 		SerialNumber:          big.NewInt(1),
@@ -70,7 +82,7 @@ func (d domain) SignCertificate(csrReq []byte) ([]byte, error) {
 	}
 
 	// Sign the CSR using the CA's private key
-	derCert, err := x509.CreateCertificate(rand.Reader, template, caCert, csr.PublicKey, caPrivateKey)
+	derCert, err := x509.CreateCertificate(rand.Reader, template, caCert, pubKey, caPrivateKey)
 	if err != nil {
 		return nil, fmt.Errorf("could not sign csr: %v", err)
 	}
@@ -93,12 +105,18 @@ func loadPrivateKeyFromFile(filename string) (*rsa.PrivateKey, error) {
 		return nil, fmt.Errorf("could not read file: %v", err)
 	}
 
-	block, rest := pem.Decode(pemFile)
-	if rest != nil {
+	block, _ := pem.Decode(pemFile)
+	if block == nil {
 		return nil, fmt.Errorf("could not decode pem file: %v", err)
 	}
 
-	return x509.ParsePKCS1PrivateKey(block.Bytes)
+	privateKey, err := x509.ParsePKCS8PrivateKey(block.Bytes)
+	rsaPrivateKey, ok := privateKey.(*rsa.PrivateKey)
+	if !ok {
+		return nil, fmt.Errorf("could not cast private key to rsa private key")
+	}
+
+	return rsaPrivateKey, nil
 }
 
 func loadCertificateFromFile(filename string) (*x509.Certificate, error) {
@@ -113,8 +131,8 @@ func loadCertificateFromFile(filename string) (*x509.Certificate, error) {
 	if err != nil {
 		return nil, fmt.Errorf("could not read file: %v", err)
 	}
-	block, rest := pem.Decode(pemFile)
-	if rest != nil {
+	block, _ := pem.Decode(pemFile)
+	if block == nil {
 		return nil, fmt.Errorf("could not decode pem file: %v", err)
 	}
 

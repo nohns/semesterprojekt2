@@ -1,66 +1,62 @@
-import React, {useEffect} from 'react';
-import {StyleSheet} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
-//import {Platform} from 'react-native';
-
-import createNativeStackNavigator from '@react-navigation/native-stack/src/navigators/createNativeStackNavigator';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-
-import Home from './pages/Home';
-//import Pair from './pages/Pair';
-import Onboarding from './pages/onboarding';
-import Bluetooth from './components/Bluetooth';
-import Welcome from './pages/onboarding/Welcome';
-
-// Import polyfills if not running on web.  Attempting to import these in web mode will result in numerous errors
-// trying to access react-native APIs
-/* if (Platform.OS !== 'web') {
-  // @ts-expect-error
-  import('react-native-polyfill-globals');
-} */
-
-const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
+import React, {useEffect, useState} from 'react';
+import {
+  ActivityIndicator,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import Onboarding from './pages/Onboarding';
+import {Identity} from './model/identity';
+import {persistantStorage} from './storage';
+import Authenticated from './pages/Authenticated';
 
 function App() {
-  const [paired, setPaired] = React.useState(true);
+  // App state
+  const [identity, setIdentity] = useState<Identity | null>(null);
+  const [state, setState] = useState<
+    'onboarding' | 'authenticated' | 'initializing'
+  >('initializing');
 
-  //custom transition that moves to the left
+  // On mount check if we have an identity stored in persistent storage
+  useEffect(() => {
+    persistantStorage.getMapAsync<Identity>('identity').then(savedIdentity => {
+      if (!savedIdentity) {
+        setState('onboarding');
+        return;
+      }
 
-  //The pairing authentication is actually not related to the bluetooth logic
-  //So all of the bluetooth logic can be
+      setIdentity(savedIdentity);
+      setState('authenticated');
+    });
+  }, []);
+
+  // When identity is given, store it in persistent storage and set state to authenticated
+  async function onIdentityGiven(newIdentity: Identity) {
+    setIdentity(newIdentity);
+    await persistantStorage.setMapAsync('identity', newIdentity);
+    setState('authenticated');
+  }
 
   return (
-    <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen
-          name="Home"
-          component={Home}
-          initialParams={{styles}}
-          options={{headerShown: false}}
-        />
-        <Tab.Screen
-          name="Opsætning"
-          component={Onboarding}
-          options={{headerShown: false}}
-          initialParams={{styles}}
-        />
-      </Tab.Navigator>
-      {/* <Stack.Navigator
-        screenOptions={{headerShown: false}}
-        initialRouteName="Home">
-        <Stack.Screen
-          name="Onboarding"
-          component={Onboarding}
-          initialParams={{Stack, styles}}
-        />
-        <Stack.Screen
-          name="Home"
-          component={Home}
-          initialParams={{Stack, styles}}
-        />
-  </Stack.Navigator>*/}
-    </NavigationContainer>
+    <>
+      <StatusBar barStyle={'dark-content'} />
+      {state === 'initializing' && (
+        <SafeAreaView>
+          <View style={styles.container}>
+            <Text>Loading...</Text>
+            <ActivityIndicator animating />
+          </View>
+        </SafeAreaView>
+      )}
+      {state === 'onboarding' && (
+        <Onboarding onIdentityGiven={onIdentityGiven} />
+      )}
+      {state === 'authenticated' && identity && (
+        <Authenticated identity={identity} />
+      )}
+    </>
   );
 }
 
@@ -68,6 +64,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
