@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package lock.v1;
+
+
+
+
+
+service LockService {
+rpc GetLockState(GetLockStateRequest) returns (GetLockStateResponse) {}
+rpc SetLockState(SetLockStateRequest) returns (SetLockStateResponse) {}
+}
+
+message GetLockStateRequest {
+string id = 1;
+}
+
+message GetLockStateResponse {
+bool engaged = 1;
+}
+
+message SetLockStateRequest {
+string id = 1;
+bool engaged = 2;
+}
+
+message SetLockStateResponse {
+bool engaged = 1;
+}
+

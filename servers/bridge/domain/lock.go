@@ -21,10 +21,12 @@ func (d domain) GetLock(ctx context.Context) (bool, error) {
 
 	res, err := d.uart.AwaitResponse(lockState)
 	if err != nil {
+		log.Println("Failed to await response:", err)
 		return false, err
 	}
 	state, err := d.translator(ctx, res[0], lockState, false)
 	if err != nil {
+		log.Println("Failed to translate response:", err)
 		return false, err
 	}
 
@@ -38,10 +40,12 @@ func (d domain) SetLock(ctx context.Context, state bool) (bool, error) {
 	if state {
 		res, err := d.uart.AwaitResponse(openLock)
 		if err != nil {
+			log.Println("Failed to await response:", err)
 			return false, err
 		}
-		state, err := d.translator(ctx, res[0], lockState, true)
+		state, err := d.translator(ctx, res[0], openLock, true)
 		if err != nil {
+			log.Println("Failed to translate response:", err)
 			return false, err
 		}
 
@@ -53,7 +57,7 @@ func (d domain) SetLock(ctx context.Context, state bool) (bool, error) {
 		if err != nil {
 			return false, err
 		}
-		state, err := d.translator(ctx, res[0], lockState, false)
+		state, err := d.translator(ctx, res[0], closeLock, false)
 		if err != nil {
 			return false, err
 		}

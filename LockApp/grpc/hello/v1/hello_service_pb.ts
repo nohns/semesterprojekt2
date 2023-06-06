@@ -3,15 +3,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import type {
-  BinaryReadOptions,
-  FieldList,
-  JsonReadOptions,
-  JsonValue,
-  PartialMessage,
-  PlainMessage,
-} from '@bufbuild/protobuf';
-import {Message, proto3} from '@bufbuild/protobuf';
+import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
+import { Message, proto3 } from "@bufbuild/protobuf";
 
 /**
  * @generated from message hello.v1.GreetRequest
@@ -20,12 +13,12 @@ export class GreetRequest extends Message<GreetRequest> {
   /**
    * @generated from field: string greeting = 1;
    */
-  greeting = '';
+  greeting = "";
 
   /**
    * @generated from field: string greeting1 = 2;
    */
-  greeting1 = '';
+  greeting1 = "";
 
   constructor(data?: PartialMessage<GreetRequest>) {
     super();
@@ -33,37 +26,25 @@ export class GreetRequest extends Message<GreetRequest> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = 'hello.v1.GreetRequest';
+  static readonly typeName = "hello.v1.GreetRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    {no: 1, name: 'greeting', kind: 'scalar', T: 9 /* ScalarType.STRING */},
-    {no: 2, name: 'greeting1', kind: 'scalar', T: 9 /* ScalarType.STRING */},
+    { no: 1, name: "greeting", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "greeting1", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
-  static fromBinary(
-    bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>,
-  ): GreetRequest {
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GreetRequest {
     return new GreetRequest().fromBinary(bytes, options);
   }
 
-  static fromJson(
-    jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>,
-  ): GreetRequest {
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GreetRequest {
     return new GreetRequest().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(
-    jsonString: string,
-    options?: Partial<JsonReadOptions>,
-  ): GreetRequest {
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GreetRequest {
     return new GreetRequest().fromJsonString(jsonString, options);
   }
 
-  static equals(
-    a: GreetRequest | PlainMessage<GreetRequest> | undefined,
-    b: GreetRequest | PlainMessage<GreetRequest> | undefined,
-  ): boolean {
+  static equals(a: GreetRequest | PlainMessage<GreetRequest> | undefined, b: GreetRequest | PlainMessage<GreetRequest> | undefined): boolean {
     return proto3.util.equals(GreetRequest, a, b);
   }
 }
@@ -75,12 +56,12 @@ export class GreetResponse extends Message<GreetResponse> {
   /**
    * @generated from field: string greeting = 1;
    */
-  greeting = '';
+  greeting = "";
 
   /**
    * @generated from field: string greeting1 = 2;
    */
-  greeting1 = '';
+  greeting1 = "";
 
   constructor(data?: PartialMessage<GreetResponse>) {
     super();
@@ -88,37 +69,25 @@ export class GreetResponse extends Message<GreetResponse> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = 'hello.v1.GreetResponse';
+  static readonly typeName = "hello.v1.GreetResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    {no: 1, name: 'greeting', kind: 'scalar', T: 9 /* ScalarType.STRING */},
-    {no: 2, name: 'greeting1', kind: 'scalar', T: 9 /* ScalarType.STRING */},
+    { no: 1, name: "greeting", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "greeting1", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
-  static fromBinary(
-    bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>,
-  ): GreetResponse {
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GreetResponse {
     return new GreetResponse().fromBinary(bytes, options);
   }
 
-  static fromJson(
-    jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>,
-  ): GreetResponse {
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GreetResponse {
     return new GreetResponse().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(
-    jsonString: string,
-    options?: Partial<JsonReadOptions>,
-  ): GreetResponse {
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GreetResponse {
     return new GreetResponse().fromJsonString(jsonString, options);
   }
 
-  static equals(
-    a: GreetResponse | PlainMessage<GreetResponse> | undefined,
-    b: GreetResponse | PlainMessage<GreetResponse> | undefined,
-  ): boolean {
+  static equals(a: GreetResponse | PlainMessage<GreetResponse> | undefined, b: GreetResponse | PlainMessage<GreetResponse> | undefined): boolean {
     return proto3.util.equals(GreetResponse, a, b);
   }
 }
@@ -130,12 +99,12 @@ export class GreetRequest1 extends Message<GreetRequest1> {
   /**
    * @generated from field: string greeting = 1;
    */
-  greeting = '';
+  greeting = "";
 
   /**
    * @generated from field: string greeting1 = 2;
    */
-  greeting1 = '';
+  greeting1 = "";
 
   constructor(data?: PartialMessage<GreetRequest1>) {
     super();
@@ -143,37 +112,25 @@ export class GreetRequest1 extends Message<GreetRequest1> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = 'hello.v1.GreetRequest1';
+  static readonly typeName = "hello.v1.GreetRequest1";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    {no: 1, name: 'greeting', kind: 'scalar', T: 9 /* ScalarType.STRING */},
-    {no: 2, name: 'greeting1', kind: 'scalar', T: 9 /* ScalarType.STRING */},
+    { no: 1, name: "greeting", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "greeting1", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
-  static fromBinary(
-    bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>,
-  ): GreetRequest1 {
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GreetRequest1 {
     return new GreetRequest1().fromBinary(bytes, options);
   }
 
-  static fromJson(
-    jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>,
-  ): GreetRequest1 {
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GreetRequest1 {
     return new GreetRequest1().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(
-    jsonString: string,
-    options?: Partial<JsonReadOptions>,
-  ): GreetRequest1 {
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GreetRequest1 {
     return new GreetRequest1().fromJsonString(jsonString, options);
   }
 
-  static equals(
-    a: GreetRequest1 | PlainMessage<GreetRequest1> | undefined,
-    b: GreetRequest1 | PlainMessage<GreetRequest1> | undefined,
-  ): boolean {
+  static equals(a: GreetRequest1 | PlainMessage<GreetRequest1> | undefined, b: GreetRequest1 | PlainMessage<GreetRequest1> | undefined): boolean {
     return proto3.util.equals(GreetRequest1, a, b);
   }
 }
@@ -185,12 +142,12 @@ export class GreetResponse1 extends Message<GreetResponse1> {
   /**
    * @generated from field: string greeting = 1;
    */
-  greeting = '';
+  greeting = "";
 
   /**
    * @generated from field: string greeting1 = 2;
    */
-  greeting1 = '';
+  greeting1 = "";
 
   constructor(data?: PartialMessage<GreetResponse1>) {
     super();
@@ -198,37 +155,26 @@ export class GreetResponse1 extends Message<GreetResponse1> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = 'hello.v1.GreetResponse1';
+  static readonly typeName = "hello.v1.GreetResponse1";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    {no: 1, name: 'greeting', kind: 'scalar', T: 9 /* ScalarType.STRING */},
-    {no: 2, name: 'greeting1', kind: 'scalar', T: 9 /* ScalarType.STRING */},
+    { no: 1, name: "greeting", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "greeting1", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
-  static fromBinary(
-    bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>,
-  ): GreetResponse1 {
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GreetResponse1 {
     return new GreetResponse1().fromBinary(bytes, options);
   }
 
-  static fromJson(
-    jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>,
-  ): GreetResponse1 {
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GreetResponse1 {
     return new GreetResponse1().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(
-    jsonString: string,
-    options?: Partial<JsonReadOptions>,
-  ): GreetResponse1 {
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GreetResponse1 {
     return new GreetResponse1().fromJsonString(jsonString, options);
   }
 
-  static equals(
-    a: GreetResponse1 | PlainMessage<GreetResponse1> | undefined,
-    b: GreetResponse1 | PlainMessage<GreetResponse1> | undefined,
-  ): boolean {
+  static equals(a: GreetResponse1 | PlainMessage<GreetResponse1> | undefined, b: GreetResponse1 | PlainMessage<GreetResponse1> | undefined): boolean {
     return proto3.util.equals(GreetResponse1, a, b);
   }
 }
+
