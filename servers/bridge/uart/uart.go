@@ -95,14 +95,3 @@ func (u *Uart) AwaitResponse(cmd int) ([]byte, error) {
 
 	return res, nil
 }
-
-/* // request constants
-const openLock = 0b1011
-const closeLock = 0b1010
-const lockState = 0b1000
-
-// Response constants
-const ack = 0b1111
-const nack = 0b1100
-const locked = 0b1101
-const unlocked = 0b1110 */
